@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                // Permite usar async/await moderno
+    "module": "CommonJS",              // Para que funcionen los imports en Node
+    "moduleResolution": "Node",
+    "esModuleInterop": true,           // Para poder hacer `import fs from 'fs'`
+    "strict": true,                    // TypeScript estricto (opcional)
+    "outDir": "./dist",                // Donde irán los archivos compilados si usás `tsc`
+    "skipLibCheck": true
+  },
+  "include": ["scripts"]
+}
