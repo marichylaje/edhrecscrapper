@@ -48,7 +48,7 @@ async function scrapeCategory(categoryUrl: string): Promise<any[]> {
     const parsed = JSON.parse(rawJson);
     const cardviews = parsed?.props?.pageProps?.data?.container?.json_dict?.cardlists?.[0]?.cardviews;
 
-    if (!Array.isArray(cardviews) || cardviews.length === 0 || pageNum === 4) break;
+    if (!Array.isArray(cardviews) || cardviews.length === 0 || pageNum === 6) break;
 
     for (const card of cardviews) {
       results.push({
