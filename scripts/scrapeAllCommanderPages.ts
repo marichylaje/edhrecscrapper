@@ -1,4 +1,11 @@
 // scripts/scrapeAllCommanderPages.ts
+/**
+ * Este archivo es el scrapper base que genera los JSON por commander.
+ * Lee de todos los commanders desde data/all-commanders.json
+ * Scrappea en EDHREC por cada commander su informacion, sacando la info necesaria para popular pinecone
+ * guarda la informacion en data/commanders/<slug>.json
+ */
+
 import fs from 'fs/promises';
 import path from 'path';
 import { chromium } from 'playwright';

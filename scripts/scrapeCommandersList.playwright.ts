@@ -1,4 +1,8 @@
 // scripts/scrapeAllCommanders.playwright.ts
+/**
+ * Este archivo produce el archivo inicial data/all-commanders.json
+ * es el primero que ha de ser corrido para obtener toda la lista de commanders
+ */
 import { chromium } from 'playwright';
 import fs from 'fs/promises';
 import path from 'path';

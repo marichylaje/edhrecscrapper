@@ -7,6 +7,12 @@
     "strict": true,
     "outDir": "./dist"
   },
+  "scripts": {
+    "scrape:all-commanders": "ts-node scripts/scrapeCommandersList.playwright.ts",
+    "scrape:pages": "ts-node scripts/scrapeAllCommanderPages.ts",
+    "compile:synergies": "ts-node scripts/compile-synergies.ts",
+    "upload:pinecone": "ts-node scripts/upload-to-pinecone.ts"
+  },
   "include": [
     "scripts"
   ],
