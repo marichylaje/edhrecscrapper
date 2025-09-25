@@ -58,6 +58,9 @@ async function fetchScryfallIdByName(name: string): Promise<string> {
   let lastError: any = null;
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
+      // 👇 throttle: 100ms entre requests
+      await new Promise((res) => setTimeout(res, 100));
+
       const res = await axios.get<ScryfallNamedResp>(url, {
         timeout: 15000,
         validateStatus: () => true,
@@ -83,6 +86,7 @@ async function fetchScryfallIdByName(name: string): Promise<string> {
     `Failed to resolve Scryfall ID for "${name}": ${lastError?.message ?? lastError}`
   );
 }
+
 
 
 async function compileSynergies() {
