@@ -6,27 +6,39 @@ on:
   workflow_dispatch:     # también lo puedes correr manualmente
 
 jobs:
-  scrape:
+  scrape-and-upload:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run scraper
-        run: node scripts/scrapeCommanders.js
+      - name: Scrape all commanders
+        run: npm run scrape:all-commanders
 
-      - name: Commit changes
+      - name: Scrape commander pages
+        run: npm run scrape:pages
+
+      - name: Compile synergies
+        run: npm run compile:synergies
+
+      - name: Upload to Pinecone
+        env:
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          PINECONE_INDEX_NAME: ${{ secrets.PINECONE_INDEX_NAME }}
+          PINECONE_INDEX_HOST: ${{ secrets.PINECONE_INDEX_HOST }}
+        run: npm run upload:pinecone
+
+      # 🧹 Cleanup para no dejar archivos pesados en el workspace de GitHub
+      - name: Cleanup data files
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add data/minibuses.json
-          git commit -m "chore: update minibuses data [auto]" || echo "No changes to commit"
-          git push
+          rm -f data/all-commanders.json
+          rm -f data/commander-synergies.json
