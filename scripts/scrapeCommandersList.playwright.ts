@@ -45,10 +45,10 @@ async function scrapeCategory(categoryUrl: string): Promise<any[]> {
     await page.goto(url, { waitUntil: 'networkidle' });
 
     const rawJson = await page.$eval('script#__NEXT_DATA__', el => el.textContent || '');
-    const parsed = JSON.parse(rawJson);
+    const parsed = JSON.parse(rawJson); 
     const cardviews = parsed?.props?.pageProps?.data?.container?.json_dict?.cardlists?.[0]?.cardviews;
 
-    if (!Array.isArray(cardviews) || cardviews.length === 0 || pageNum === 6) break;
+    if (!Array.isArray(cardviews) || cardviews.length === 0 || pageNum === 4) break;
 
     for (const card of cardviews) {
       results.push({
