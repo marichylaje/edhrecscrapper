@@ -56,10 +56,19 @@ async function loadScryfallIdMapInMemory() {
   console.log(`⚙️ Mapeando ${bulkRes.data.length} cartas en memoria...`);
   for (const card of bulkRes.data) {
     if (card.name && card.id) {
-      scryfallIdMap.set(card.name.toLowerCase().trim(), card.id);
+      const lowerName = card.name.toLowerCase().trim();
+      
+      // Guardar el nombre tal y como viene en Scryfall (ej: "A // B")
+      scryfallIdMap.set(lowerName, card.id);
+
+      // NUEVO: Si es una carta de doble cara, guardar también solo la cara frontal (ej: "A")
+      if (lowerName.includes(' // ')) {
+        const frontalName = lowerName.split(' // ')[0].trim();
+        scryfallIdMap.set(frontalName, card.id);
+      }
     }
   }
-  console.log('✅ Catálogo de IDs cargado perfectamente.');
+  console.log('✅ Catálogo de IDs cargado perfectamente con soporte para cartas de doble cara.');
 }
 
 async function compileSynergies() {

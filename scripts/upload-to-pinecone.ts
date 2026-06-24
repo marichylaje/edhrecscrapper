@@ -1,8 +1,8 @@
 // scripts/upload-to-pinecone.ts
+import 'dotenv/config';
 import fs from 'fs/promises';
 import path from 'path';
 import { pinecone } from './pinecone';
-import 'dotenv/config';
 
 const INDEX_NAME = process.env.PINECONE_INDEX_NAME!;
 const INDEX_HOST = process.env.PINECONE_INDEX_HOST!;
