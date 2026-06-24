@@ -1,15 +1,7 @@
-// scripts/compileSynergies.ts
+// scripts/compile-synergies.ts
 /**
  * Lee JSONs de data/commanders y genera data/commander-synergies.json
- * resolviendo Scryfall IDs para commander/partner y produciendo:
- * [
- *   {
- *     "id": "<commanderId>[__<partnerId>]",
- *     "commander": "Name",
- *     "partner": "Name | null",
- *     "cards": [{ name, synergy, deckCount }, ... up to 120]
- *   }
- * ]
+ * resolviendo Scryfall IDs para commander/partner y produciendo un archivo final estructurado.
  */
 
 import fs from 'fs/promises';
@@ -46,25 +38,32 @@ type OutputRow = {
   }[];
 };
 
-// --- cache en memoria para ids resueltos
 const idCache = new Map<string, string>();
+const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 async function fetchScryfallIdByName(name: string): Promise<string> {
   const key = name.trim();
   if (idCache.has(key)) return idCache.get(key)!;
 
   const url = `https://api.scryfall.com/cards/named?exact=${encodeURIComponent(key)}`;
-
   let lastError: any = null;
+
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      // 👇 throttle: 100ms entre requests
-      await new Promise((res) => setTimeout(res, 100));
+      // Respetar estrictamente la política de Scryfall (recomedado > 100ms)
+      await sleep(150);
 
       const res = await axios.get<ScryfallNamedResp>(url, {
         timeout: 15000,
-        validateStatus: () => true,
+        validateStatus: () => true, // Evita que axios lance excepciones en códigos 4xx/5xx
       });
+
+      // Manejo inteligente de Rate Limiting (HTTP 429)
+      if (res.status === 429) {
+        console.warn(`🛑 [Rate Limit] Scryfall nos bloqueó. Esperando 65 segundos antes del intento ${attempt}/3...`);
+        await sleep(65000); // Dormir el script el tiempo solicitado por Scryfall
+        continue;
+      }
 
       if (res.status >= 200 && res.status < 300 && res.data?.id) {
         const id = res.data.id;
@@ -79,15 +78,14 @@ async function fetchScryfallIdByName(name: string): Promise<string> {
       lastError = e;
     }
 
-    await new Promise((r) => setTimeout(r, attempt * 400));
+    // Esperar un backoff exponencial si es un error común de red
+    await sleep(attempt * 1000);
   }
 
   throw new Error(
     `Failed to resolve Scryfall ID for "${name}": ${lastError?.message ?? lastError}`
   );
 }
-
-
 
 async function compileSynergies() {
   const files = await fs.readdir(COMMANDERS_DIR);
@@ -115,9 +113,9 @@ async function compileSynergies() {
       const commander = rawCommander?.trim();
       const partner = rawPartner ? rawPartner.trim() : null;
 
-      // Top 120 por synergy (ignorando nulls)
+      // Top 120 por synergy
       const topCards = json.cards
-        .slice(1) // saltar el propio commander (posición 0)
+        .slice(1)
         .filter((c) => typeof c.synergy === 'number')
         .sort((a, b) => (b.synergy! - a.synergy!))
         .slice(0, 120)
@@ -127,7 +125,7 @@ async function compileSynergies() {
           deckCount: c.deckCount ?? 0,
         }));
 
-      // Resolver IDs
+      // Resolver IDs con Scryfall
       const commanderId = await fetchScryfallIdByName(commander);
       const partnerId = partner ? await fetchScryfallIdByName(partner) : null;
 
@@ -144,9 +142,14 @@ async function compileSynergies() {
       if (processed % 50 === 0) {
         console.log(`…progreso: ${processed} procesados (${skipped} omitidos)`);
       }
-    } catch (error) {
-      console.warn(`⚠️ Error leyendo/parsing "${file}":`, error);
+    } catch (error: any) {
+      console.warn(`⚠️ Error procesando "${file}":`, error.message || error);
       skipped++;
+      // Si el error persistente fue un 429 general, pausamos el bucle general de archivos
+      if (error.message?.includes('429')) {
+        console.log('⏳ Pausando el procesamiento por 60 segundos debido a un bloqueo masivo...');
+        await sleep(60000);
+      }
       continue;
     }
   }
@@ -154,7 +157,7 @@ async function compileSynergies() {
   await fs.mkdir(path.dirname(OUTPUT_FILE), { recursive: true });
   await fs.writeFile(OUTPUT_FILE, JSON.stringify(output, null, 2), 'utf-8');
 
-  console.log(`✅ Archivo generado: ${OUTPUT_FILE}`);
+  console.log(`\n✅ Archivo generado con éxito: ${OUTPUT_FILE}`);
   console.log(`   Total OK: ${processed} | Omitidos: ${skipped}`);
 }
 
