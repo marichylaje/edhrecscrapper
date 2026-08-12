@@ -8,6 +8,7 @@ import fs from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
 import axios from 'axios';
+import { gunzipSync } from 'zlib';
 
 const COMMANDERS_DIR = path.join(__dirname, '..', 'data', 'commanders');
 const OUTPUT_FILE = path.join(__dirname, '..', 'data', 'commander-synergies.json');
@@ -35,26 +36,52 @@ type OutputRow = {
   }[];
 };
 
+type ScryfallBulkInfoItem = {
+  type: string;
+  name?: string;
+  download_uri?: string;
+  jsonl_download_uri?: string;
+};
+
+type ScryfallOracleCard = {
+  name?: string;
+  id?: string;
+};
+
 // Mapa en memoria: Nombre de la carta (minúsculas) -> Scryfall ID
 const scryfallIdMap = new Map<string, string>();
 
 /**
- * Descarga el Bulk Data de "Oracle Cards" de Scryfall y mapea todos los IDs en memoria
+ * Descarga el Bulk Data de "Oracle Cards" de Scryfall y mapea todos los IDs en memoria.
+ * Soporta tanto el esquema antiguo con download_uri como el actual con jsonl_download_uri.
  */
 async function loadScryfallIdMapInMemory() {
   console.log('🔍 Obteniendo URL del Bulk Data de Scryfall...');
-  const infoRes = await axios.get<{ data: Array<{ type: string; download_uri: string }> }>(SCRYFALL_BULK_INFO_URL);
-  const downloadUrl = infoRes.data.data.find((item) => item.type === 'oracle_cards')?.download_uri;
+  const infoRes = await axios.get<{ data: ScryfallBulkInfoItem[] }>(SCRYFALL_BULK_INFO_URL);
+  const oracleBulk = infoRes.data.data.find(
+    (item) => item.type === 'oracle_cards' || item.name?.toLowerCase() === 'oracle cards'
+  );
+  const downloadUrl = oracleBulk?.jsonl_download_uri ?? oracleBulk?.download_uri;
 
   if (!downloadUrl) {
     throw new Error('No se pudo encontrar el archivo "oracle_cards" en la metadata de Scryfall.');
   }
 
   console.log(`📥 Descargando catálogo completo de Scryfall (Oracle Cards)...`);
-  const bulkRes = await axios.get<Array<{ name: string; id: string }>>(downloadUrl);
+  const bulkRes = await axios.get<ArrayBuffer>(downloadUrl, { responseType: 'arraybuffer' });
 
-  console.log(`⚙️ Mapeando ${bulkRes.data.length} cartas en memoria...`);
-  for (const card of bulkRes.data) {
+  const rawText = downloadUrl.endsWith('.gz')
+    ? gunzipSync(Buffer.from(bulkRes.data)).toString('utf-8')
+    : Buffer.from(bulkRes.data).toString('utf-8');
+
+  const bulkCards: ScryfallOracleCard[] = rawText
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
+
+  console.log(`⚙️ Mapeando ${bulkCards.length} cartas en memoria...`);
+  for (const card of bulkCards) {
     if (card.name && card.id) {
       const lowerName = card.name.toLowerCase().trim();
       
