@@ -11,7 +11,8 @@
     "scrape:all-commanders": "ts-node scripts/scrapeCommandersList.playwright.ts",
     "scrape:pages": "ts-node scripts/scrapeAllCommanderPages.ts",
     "compile:synergies": "ts-node scripts/compile-synergies.ts",
-    "upload:pinecone": "ts-node scripts/upload-to-pinecone.ts"
+    "upload:pinecone": "ts-node scripts/upload-to-pinecone.ts",
+    "sync:pinecone": "npm run scrape:all-commanders && npm run scrape:pages && npm run compile:synergies && npm run upload:pinecone"
   },
   "include": [
     "scripts"

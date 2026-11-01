@@ -6,6 +6,9 @@ import { pinecone } from './pinecone';
 
 const INDEX_NAME = process.env.PINECONE_INDEX_NAME!;
 const INDEX_HOST = process.env.PINECONE_INDEX_HOST!;
+const INDEX_NAMESPACE = process.env.PINECONE_NAMESPACE || '__default__';
+const FULL_REFRESH = String(process.env.PINECONE_FULL_REFRESH || 'false').toLowerCase() === 'true';
+const MAX_BATCH_RETRIES = Number(process.env.PINECONE_MAX_BATCH_RETRIES || 3);
 const FILE_PATH = path.resolve(__dirname, '../data/commander-synergies.json');
 
 // 🔄 Divide array en chunks
@@ -29,12 +32,23 @@ type Entry = {
 };
 
 async function uploadToPinecone() {
-  const client = pinecone.index(INDEX_NAME, INDEX_HOST).namespace('__default__');
+  const client = pinecone.index(INDEX_NAME, INDEX_HOST).namespace(INDEX_NAMESPACE);
 
   const raw = await fs.readFile(FILE_PATH, 'utf-8');
   const commanders = JSON.parse(raw) as Entry[];
 
+  if (!Array.isArray(commanders) || commanders.length === 0) {
+    throw new Error('commander-synergies.json está vacío o tiene formato inválido');
+  }
+
   console.log(`📄 Loaded ${commanders.length} commanders`);
+  console.log(`📍 Namespace: ${INDEX_NAMESPACE}`);
+
+  if (FULL_REFRESH) {
+    console.log('🧹 Full refresh habilitado: eliminando vectores existentes del namespace...');
+    await client.deleteAll();
+    console.log('✅ Namespace limpiado');
+  }
 
   // Preparamos records: id + chunk_text + metadata
   const records = commanders.map((entry) => {
@@ -57,80 +71,105 @@ async function uploadToPinecone() {
   console.log(`🔄 Processing ${records.length} records in ${batches.length} batches of 96`);
 
   let processedCount = 0;
-  let batchIndex = 0;
+  let failedBatches = 0;
+  let failedRecords = 0;
 
-  for (const batch of batches) {
-    batchIndex++;
-    console.log(`\n🔄 Processing batch ${batchIndex}/${batches.length} with ${batch.length} items`);
+  for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+    const batch = batches[batchIndex];
+    const displayBatchNumber = batchIndex + 1;
+    console.log(`\n🔄 Processing batch ${displayBatchNumber}/${batches.length} with ${batch.length} items`);
 
-    try {
-      const inputs = batch.map((r) => r.chunk_text);
-      console.log(`📊 Generating embeddings for ${inputs.length} texts...`);
+    let attempt = 0;
+    let uploaded = false;
 
-      const embeddingResponse = await pinecone.inference.embed('multilingual-e5-large', inputs, {
-        input_type: 'passage',
-        truncate: 'END',
-      });
+    while (attempt < MAX_BATCH_RETRIES && !uploaded) {
+      attempt++;
 
-      const embeddings = embeddingResponse.data
-        ? embeddingResponse.data.map((item: any) => item.values)
-        : (embeddingResponse as any).embeddings?.map((e: any) => e.values);
+      try {
+        const inputs = batch.map((r) => r.chunk_text);
+        console.log(`📊 Generating embeddings for ${inputs.length} texts... (attempt ${attempt}/${MAX_BATCH_RETRIES})`);
 
-      if (!embeddings || embeddings.length !== batch.length) {
-        console.error('❌ Embeddings mismatch or missing');
-        throw new Error('Embeddings invalid');
+        const embeddingResponse = await pinecone.inference.embed('multilingual-e5-large', inputs, {
+          input_type: 'passage',
+          truncate: 'END',
+        });
+
+        const embeddings = embeddingResponse.data
+          ? embeddingResponse.data.map((item: any) => item.values)
+          : (embeddingResponse as any).embeddings?.map((e: any) => e.values);
+
+        if (!embeddings || embeddings.length !== batch.length) {
+          throw new Error('Embeddings invalid: mismatch o falta de resultados');
+        }
+
+        console.log(`✨ Generated ${embeddings.length} embeddings`);
+
+        const vectors = batch.map((r, i) => ({
+          id: r._id,
+          values: embeddings[i],
+          metadata: {
+            commander: r.commander,
+            partner: r.partner ?? '',
+            cards: JSON.stringify(r.cards),
+          },
+        }));
+
+        const invalidVectors = vectors.filter(
+          (v) => !v.values || !Array.isArray(v.values) || v.values.length === 0 || !v.id
+        );
+        if (invalidVectors.length > 0) {
+          throw new Error(`Invalid embedding vectors detected: ${invalidVectors.length}`);
+        }
+
+        await client.upsert(vectors);
+        processedCount += vectors.length;
+        uploaded = true;
+
+        console.log(`✅ Uploaded batch ${displayBatchNumber}/${batches.length} (${vectors.length} vectors)`);
+        console.log(
+          `📊 Progress: ${processedCount}/${records.length} (${((processedCount / records.length) * 100).toFixed(1)}%)`
+        );
+      } catch (error: any) {
+        const message = error?.message ?? String(error);
+        console.error(`❌ Error in batch ${displayBatchNumber} (attempt ${attempt}/${MAX_BATCH_RETRIES}):`, message);
+
+        const isRateLimit = message.includes('RESOURCE_EXHAUSTED') || error?.status === 429;
+        if (isRateLimit && attempt < MAX_BATCH_RETRIES) {
+          console.log('⏳ Rate limit hit, waiting 60 seconds before retry...');
+          await delay(60000);
+          continue;
+        }
+
+        if (attempt >= MAX_BATCH_RETRIES) {
+          break;
+        }
+
+        console.log('⏳ Waiting 5 seconds before retry...');
+        await delay(5000);
       }
+    }
 
-      console.log(`✨ Generated ${embeddings.length} embeddings`);
+    if (!uploaded) {
+      failedBatches++;
+      failedRecords += batch.length;
+      console.error(`⚠️ Batch ${displayBatchNumber} failed after ${MAX_BATCH_RETRIES} attempts`);
+    }
 
-      const vectors = batch.map((r, i) => ({
-        id: r._id, // <-- ID final en Pinecone
-        values: embeddings[i],
-        metadata: {
-          commander: r.commander,
-          partner: r.partner ?? '',
-          cards: JSON.stringify(r.cards), // se guarda como string
-        },
-      }));
-
-      // Validación
-      const invalidVectors = vectors.filter(
-        (v) => !v.values || !Array.isArray(v.values) || v.values.length === 0 || !v.id
-      );
-      if (invalidVectors.length > 0) {
-        console.error('❌ Invalid vectors found:', invalidVectors.length);
-        console.error('First invalid vector:', invalidVectors[0]);
-        throw new Error('Invalid embedding vectors detected');
-      }
-
-      // 📤 Subida
-      await client.upsert(vectors);
-      processedCount += vectors.length;
-
-      console.log(`✅ Uploaded batch ${batchIndex}/${batches.length} (${vectors.length} vectors)`);
-      console.log(
-        `📊 Progress: ${processedCount}/${records.length} (${((processedCount / records.length) * 100).toFixed(1)}%)`
-      );
-
-      if (batchIndex < batches.length) {
-        console.log('⏳ Waiting 3 seconds before next batch...');
-        await delay(3000);
-      }
-    } catch (error: any) {
-      console.error(`❌ Error in batch ${batchIndex}:`, error?.message ?? error);
-
-      if (error?.message?.includes('RESOURCE_EXHAUSTED') || error?.status === 429) {
-        console.log('⏳ Rate limit hit, waiting 60 seconds before retry...');
-        await delay(60000);
-        batchIndex--; // retry same batch
-        continue;
-      }
-
-      console.log('⚠️ Skipping batch and continuing...');
+    if (displayBatchNumber < batches.length) {
+      await delay(3000);
     }
   }
 
-  console.log(`\n🎉 Upload complete! Processed ${processedCount}/${records.length} records`);
+  console.log(`\n📦 Upload summary: processed=${processedCount}, failed=${failedRecords}`);
+
+  if (failedBatches > 0) {
+    throw new Error(`Upload incompleto: ${failedBatches} batch(es) fallaron y ${failedRecords} registros no se subieron`);
+  }
+
+  console.log(`🎉 Upload complete! Processed ${processedCount}/${records.length} records`);
 }
 
-uploadToPinecone().catch(console.error);
+uploadToPinecone().catch((error) => {
+  console.error('❌ uploadToPinecone failed:', error);
+  process.exit(1);
+});

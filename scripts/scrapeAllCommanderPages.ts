@@ -8,62 +8,111 @@
 
 import fs from 'fs/promises';
 import path from 'path';
-import { chromium, Browser } from 'playwright';
+import axios from 'axios';
 
 const commandersPath = path.resolve(__dirname, '../data/all-commanders.json');
 const outputDir = path.resolve(__dirname, '../data/commanders');
 const DELAY_MS = 2500;
 const MAX_RETRIES = 3;
+const FORCE_REFRESH = String(process.env.SCRAPE_FORCE_REFRESH || 'false').toLowerCase() === 'true';
+const EDHREC_JSON_BASE = 'https://json.edhrec.com/pages';
+
+const REQUEST_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (compatible; EDHRECScrapper/1.0)',
+  Accept: 'application/json,text/plain,*/*',
+  Referer: 'https://edhrec.com/',
+};
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-async function scrapeCommanderPage(browser: Browser, slug: string) {
-  const url = `https://edhrec.com/commanders/${slug}`;
-  const page = await browser.newPage();
+type CommanderJsonCardView = {
+  name?: string;
+  synergy?: number;
+  num_decks?: number;
+};
 
-  try {
-    console.log(`🌐 Cargando ${url}`);
-    
-    let success = false;
-    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-      try {
-        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30_000 });
-        // Esperamos a que un contenedor de cartas esté presente en el DOM
-        await page.waitForSelector('.Card_container__Ng56K', { state: 'attached', timeout: 15_000 });
-        success = true;
-        break;
-      } catch (err: any) {
-        console.warn(`  ⚠️ Intento ${attempt}/${MAX_RETRIES} fallido para ${slug}: ${err.message}`);
-        if (attempt < MAX_RETRIES) await sleep(attempt * 5000);
+type CommanderJsonResponse = {
+  header?: string;
+  container?: {
+    json_dict?: {
+      cardlists?: Array<{
+        cardviews?: CommanderJsonCardView[];
+      }>;
+    };
+  };
+};
+
+function parseCommanderNameFromHeader(header?: string): string | null {
+  if (!header) return null;
+  const cleaned = header.replace(/\s*\(Commander\)\s*$/i, '').trim();
+  return cleaned || null;
+}
+
+function toPercentValue(value: number | undefined): number | null {
+  if (typeof value !== 'number' || Number.isNaN(value)) return null;
+  return Math.round(value * 100);
+}
+
+async function fetchCommanderJson(slug: string): Promise<CommanderJsonResponse> {
+  const url = `${EDHREC_JSON_BASE}/commanders/${slug}.json`;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const response = await axios.get<CommanderJsonResponse>(url, {
+        headers: REQUEST_HEADERS,
+        timeout: 30_000,
+      });
+      return response.data;
+    } catch (err: any) {
+      console.warn(`  ⚠️ Intento ${attempt}/${MAX_RETRIES} fallido para ${slug}: ${err.message}`);
+      if (attempt < MAX_RETRIES) {
+        await sleep(attempt * 5000);
       }
     }
-
-    if (!success) {
-      console.error(`❌ No se pudo cargar correctamente la página para ${slug}`);
-      return null;
-    }
-
-    const cards = await page.$$eval('.Card_container__Ng56K', (cardDivs) =>
-      cardDivs.map((cardDiv) => {
-        const name = cardDiv.querySelector('.Card_name__Mpa7S')?.textContent?.trim() || '';
-        const labelText = cardDiv.querySelector('.CardLabel_label__iAM7T')?.textContent || '';
-        const match = labelText.match(/(\d+)% of ([\d,]+) decks\s*\+(\d+)%/);
-        const percent = match ? parseInt(match[1], 10) : null;
-        const deckCount = match ? parseInt(match[2].replace(/,/g, ''), 10) : null;
-        const synergy = match ? parseInt(match[3], 10) : null;
-
-        return { name, percent, deckCount, synergy };
-      })
-    );
-
-    return { slug, cards };
-  } catch (err: any) {
-    console.warn(`❌ Error inesperado procesando ${url}: ${err.message}`);
-    return null;
-  } finally {
-    // Cerramos la pestaña individual de forma segura
-    await page.close();
   }
+
+  throw new Error(`No se pudo obtener JSON para ${slug} luego de ${MAX_RETRIES} intentos`);
+}
+
+async function scrapeCommanderPage(slug: string) {
+  console.log(`🌐 Cargando ${slug} desde JSON de EDHREC...`);
+  const data = await fetchCommanderJson(slug);
+
+  const commanderName = parseCommanderNameFromHeader(data.header);
+  if (!commanderName) {
+    console.error(`❌ No se pudo parsear el nombre del comandante para ${slug}`);
+    return null;
+  }
+
+  const cardlists = data?.container?.json_dict?.cardlists || [];
+  const byName = new Map<string, { name: string; percent: number | null; deckCount: number | null; synergy: number | null }>();
+
+  for (const list of cardlists) {
+    for (const card of list.cardviews || []) {
+      if (!card.name) continue;
+      const synergy = toPercentValue(card.synergy);
+      if (synergy === null) continue;
+
+      const deckCount = typeof card.num_decks === 'number' ? card.num_decks : null;
+      const entry = {
+        name: card.name,
+        percent: null,
+        deckCount,
+        synergy,
+      };
+
+      const previous = byName.get(card.name);
+      if (!previous || (entry.synergy ?? -9999) > (previous.synergy ?? -9999)) {
+        byName.set(card.name, entry);
+      }
+    }
+  }
+
+  const cards = [
+    { name: commanderName, percent: null, deckCount: null, synergy: null },
+    ...[...byName.values()].sort((a, b) => (b.synergy ?? -9999) - (a.synergy ?? -9999)),
+  ];
+
+  return { slug, cards };
 }
 
 (async () => {
@@ -72,18 +121,12 @@ async function scrapeCommanderPage(browser: Browser, slug: string) {
 
   await fs.mkdir(outputDir, { recursive: true });
 
-  // Instanciamos el navegador una sola vez fuera del bucle
-  const browser = await chromium.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
-  });
+  for (const commander of commanders) {
+    const slug = commander.sanitized;
+    const outputFile = path.join(outputDir, `${slug}.json`);
 
-  try {
-    for (const commander of commanders) {
-      const slug = commander.sanitized;
-      const outputFile = path.join(outputDir, `${slug}.json`);
-
-      try {
+    try {
+      if (!FORCE_REFRESH) {
         // Omitir si ya existe
         try {
           await fs.access(outputFile);
@@ -92,21 +135,18 @@ async function scrapeCommanderPage(browser: Browser, slug: string) {
         } catch {
           // No existe, continuar
         }
-
-        const data = await scrapeCommanderPage(browser, slug);
-        if (data) {
-          await fs.writeFile(outputFile, JSON.stringify(data, null, 2));
-          console.log(`✅ Guardado ${slug}.json con ${data.cards.length} cartas`);
-        }
-        
-        await sleep(DELAY_MS);
-      } catch (err) {
-        console.error(`⚠️ Fallo al procesar ciclo de ${slug}: ${err}`);
       }
+
+      const data = await scrapeCommanderPage(slug);
+      if (data) {
+        await fs.writeFile(outputFile, JSON.stringify(data, null, 2));
+        console.log(`✅ Guardado ${slug}.json con ${data.cards.length} cartas`);
+      }
+
+      await sleep(DELAY_MS);
+    } catch (err) {
+      console.error(`⚠️ Fallo al procesar ciclo de ${slug}: ${err}`);
     }
-  } finally {
-    // Esto asegura que al terminar el script se maten todos los procesos zombis de Chromium
-    await browser.close();
   }
 
   console.log('🏁 Scrapeo de comandantes finalizado.');
