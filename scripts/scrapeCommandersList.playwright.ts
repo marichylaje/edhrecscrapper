@@ -1,50 +1,40 @@
 // scripts/scrapeCommandersList.playwright.ts
 /**
  * Este archivo produce el archivo inicial data/all-commanders.json
- * es el primero que ha de ser corrido para obtener toda la lista de commanders
+ * es el primero que ha de ser corrido para obtener toda la lista de commanders.
+ *
+ * Fuente maestra: Scryfall (is:commander legal:commander)
+ * Objetivo: mantener contrato compatible con scripts posteriores.
  */
 import fs from 'fs/promises';
 import path from 'path';
 import axios from 'axios';
-import { Browser, chromium, Page } from 'playwright';
 
-const DELAY_BETWEEN_PAGES_MS = 2500;
-const DELAY_BETWEEN_CATEGORIES_MS = 4000;
 const MAX_RETRIES = 3;
-const MAX_PAGES_PER_CATEGORY = Number(process.env.SCRAPE_MAX_PAGES_PER_CATEGORY || 0);
-const EDHREC_JSON_BASE = 'https://json.edhrec.com/pages';
+const SCRYFALL_SEARCH_URL = 'https://api.scryfall.com/cards/search';
+const SCRYFALL_QUERY = 'is:commander legal:commander';
+const MAX_SCRYFALL_PAGES = Number(process.env.SCRAPE_MAX_PAGES_PER_CATEGORY || 0);
+const DELAY_BETWEEN_REQUESTS_MS = 150;
 
 const REQUEST_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (compatible; EDHRECScrapper/1.0)',
   Accept: 'application/json,text/plain,*/*',
-  Referer: 'https://edhrec.com/',
 };
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-type CategoryResponse = {
-  related_info?: Array<{
-    header?: string;
-    items?: Array<{ textLeft?: string; url?: string }>;
-  }>;
-};
-
-type CardView = {
+type ScryfallCard = {
   name?: string;
-  num_decks?: number;
-  url?: string;
-  sanitized?: string;
   color_identity?: string[];
+  keywords?: string[];
+  oracle_text?: string;
+  type_line?: string;
 };
 
-type CategoryPageResponse = {
-  container?: {
-    json_dict?: {
-      cardlists?: Array<{
-        cardviews?: CardView[];
-      }>;
-    };
-  };
+type ScryfallSearchResponse = {
+  data?: ScryfallCard[];
+  has_more?: boolean;
+  next_page?: string;
 };
 
 type CommanderListItem = {
@@ -53,13 +43,24 @@ type CommanderListItem = {
   url: string;
   sanitized: string;
   colors: string[];
+  isPartnerPair?: boolean;
 };
 
-async function getJsonWithRetries<T>(url: string): Promise<T> {
+type CommanderSource = {
+  name: string;
+  sanitized: string;
+  colors: string[];
+  keywords: string[];
+  oracleText: string;
+  typeLine: string;
+};
+
+async function getJsonWithRetries<T>(url: string, params?: Record<string, string>): Promise<T> {
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
       const response = await axios.get<T>(url, {
         headers: REQUEST_HEADERS,
+        params,
         timeout: 30_000,
       });
       return response.data;
@@ -74,200 +75,234 @@ async function getJsonWithRetries<T>(url: string): Promise<T> {
   throw new Error(`No se pudo obtener JSON de ${url} luego de ${MAX_RETRIES} intentos`);
 }
 
-async function getAllCategoryUrls(): Promise<{ name: string; url: string }[]> {
-  console.log('🌐 Obteniendo categorías desde JSON de EDHREC...');
-  const seedUrl = `${EDHREC_JSON_BASE}/commanders/mono-white.json?page=1`;
-  const parsed = await getJsonWithRetries<CategoryResponse>(seedUrl);
-  const related = parsed?.related_info;
+function toEdhrecSlug(name: string): string {
+  const base = name.split(' // ')[0].trim();
+  return base
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-{2,}/g, '-');
+}
 
-  const allUrls: { name: string; url: string }[] = [];
-  for (const group of related || []) {
-    for (const item of group.items || []) {
-      if (!item.url || !item.textLeft) continue;
-      allUrls.push({
-        name: item.textLeft,
-        url: item.url,
-      });
+function toNameKey(name: string): string {
+  return name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+function unionColors(colorsA: string[], colorsB: string[]): string[] {
+  const colorOrder = ['W', 'U', 'B', 'R', 'G', 'C'];
+  const merged = new Set<string>([
+    ...colorsA.map((c) => c.toUpperCase()),
+    ...colorsB.map((c) => c.toUpperCase()),
+  ]);
+  return colorOrder.filter((c) => merged.has(c));
+}
+
+function mapScryfallCardToCommander(card: ScryfallCard): CommanderSource | null {
+  if (!card.name) return null;
+
+  const sanitized = toEdhrecSlug(card.name);
+  if (!sanitized) return null;
+
+  return {
+    name: card.name,
+    sanitized,
+    colors: card.color_identity || [],
+    keywords: card.keywords || [],
+    oracleText: card.oracle_text || '',
+    typeLine: card.type_line || '',
+  };
+}
+
+function buildSingleCommanderEntry(card: CommanderSource): CommanderListItem {
+  return {
+    name: card.name,
+    decks: 0,
+    sanitized: card.sanitized,
+    url: `https://edhrec.com/commanders/${card.sanitized}`,
+    colors: card.colors,
+  };
+}
+
+function buildPairCommanderEntry(a: CommanderSource, b: CommanderSource): CommanderListItem | null {
+  if (a.sanitized === b.sanitized) return null;
+
+  const [left, right] = [a, b].sort((x, y) => x.sanitized.localeCompare(y.sanitized));
+  const pairSlug = `${left.sanitized}-${right.sanitized}`;
+
+  return {
+    name: `${left.name} / ${right.name}`,
+    decks: 0,
+    sanitized: pairSlug,
+    url: `https://edhrec.com/commanders/${pairSlug}`,
+    colors: unionColors(left.colors, right.colors),
+    isPartnerPair: true,
+  };
+}
+
+function getPartnerWithTargetName(oracleText: string): string | null {
+  const match = oracleText.match(/Partner with\s+([^.\n]+?)(?:\.|\n|$)/i);
+  if (!match?.[1]) return null;
+  return match[1].trim();
+}
+
+function hasKeyword(card: CommanderSource, keyword: string): boolean {
+  return card.keywords.some((k) => k.toLowerCase() === keyword.toLowerCase());
+}
+
+function hasOracleText(card: CommanderSource, snippet: string): boolean {
+  return card.oracleText.toLowerCase().includes(snippet.toLowerCase());
+}
+
+function generateCombinations(cards: CommanderSource[]): CommanderListItem[] {
+  const pairs = new Map<string, CommanderListItem>();
+  const byName = new Map<string, CommanderSource>();
+
+  for (const card of cards) {
+    byName.set(toNameKey(card.name), card);
+  }
+
+  const isFriendsForever = (card: CommanderSource) =>
+    hasKeyword(card, 'Friends forever') || hasOracleText(card, 'friends forever');
+  const isPartnerWith = (card: CommanderSource) => hasOracleText(card, 'partner with ');
+  const isGenericPartner = (card: CommanderSource) =>
+    hasKeyword(card, 'Partner') && !isPartnerWith(card) && !isFriendsForever(card);
+  const isChooseBackgroundCommander = (card: CommanderSource) =>
+    hasOracleText(card, 'choose a background');
+  const isBackground = (card: CommanderSource) =>
+    /enchantment/i.test(card.typeLine) && /background/i.test(card.typeLine);
+  const isDoctor = (card: CommanderSource) => /time lord doctor/i.test(card.typeLine);
+  const isDoctorsCompanion = (card: CommanderSource) => hasOracleText(card, "doctor's companion");
+
+  const addPair = (a: CommanderSource, b: CommanderSource) => {
+    const pair = buildPairCommanderEntry(a, b);
+    if (!pair) return;
+    if (!pairs.has(pair.sanitized)) {
+      pairs.set(pair.sanitized, pair);
+    }
+  };
+
+  // 1) Partner with <Nombre> (parejas exclusivas)
+  for (const card of cards) {
+    const targetName = getPartnerWithTargetName(card.oracleText);
+    if (!targetName) continue;
+    const target = byName.get(toNameKey(targetName));
+    if (!target) continue;
+    addPair(card, target);
+  }
+
+  // 2) Partner genérico
+  const genericPartners = cards.filter(isGenericPartner);
+  for (let i = 0; i < genericPartners.length; i++) {
+    for (let j = i + 1; j < genericPartners.length; j++) {
+      addPair(genericPartners[i], genericPartners[j]);
     }
   }
 
-  if (allUrls.length === 0) {
-    throw new Error('No se pudieron resolver categorías de commanders desde EDHREC JSON');
+  // 3) Friends forever
+  const friendsForever = cards.filter(isFriendsForever);
+  for (let i = 0; i < friendsForever.length; i++) {
+    for (let j = i + 1; j < friendsForever.length; j++) {
+      addPair(friendsForever[i], friendsForever[j]);
+    }
   }
 
-  return allUrls;
-}
-
-function parseDeckCount(raw: string): number {
-  const normalized = raw.trim().replace(',', '.').toUpperCase();
-  const match = normalized.match(/^(\d+(?:\.\d+)?)\s*([KM]?)$/);
-  if (!match) return 0;
-
-  const base = Number(match[1]);
-  if (Number.isNaN(base)) return 0;
-
-  if (match[2] === 'K') return Math.round(base * 1_000);
-  if (match[2] === 'M') return Math.round(base * 1_000_000);
-  return Math.round(base);
-}
-
-async function extractCommandersFromPage(page: Page): Promise<CommanderListItem[]> {
-  return page.evaluate(() => {
-    const cards = [...document.querySelectorAll('a.piGH7G_container[href^="/commanders/"]')];
-    const items: CommanderListItem[] = [];
-
-    const parseDeckCountInPage = (raw: string): number => {
-      const normalized = raw.trim().replace(',', '.').toUpperCase();
-      const match = normalized.match(/^(\d+(?:\.\d+)?)\s*([KM]?)$/);
-      if (!match) return 0;
-
-      const base = Number(match[1]);
-      if (Number.isNaN(base)) return 0;
-      if (match[2] === 'K') return Math.round(base * 1_000);
-      if (match[2] === 'M') return Math.round(base * 1_000_000);
-      return Math.round(base);
-    };
-
-    for (const cardLink of cards) {
-      const href = cardLink.getAttribute('href') || '';
-      const slug = href.replace('/commanders/', '').trim();
-      if (!slug) continue;
-
-      const name = (cardLink.querySelector('.piGH7G_name')?.textContent || '').trim();
-      if (!name) continue;
-
-      const statsContainer = cardLink.closest('li, div');
-      const statsText = (statsContainer?.textContent || '').replace(/\s+/g, ' ');
-      const decksMatch = statsText.match(/([\d.,]+)\s*([KMkm]?)\s*Decks/i);
-      const decksRaw = decksMatch ? `${decksMatch[1]}${decksMatch[2] || ''}` : '0';
-
-      items.push({
-        name,
-        decks: parseDeckCountInPage(decksRaw),
-        url: `https://edhrec.com${href}`,
-        sanitized: slug,
-        colors: [],
-      });
+  // 4) Choose a Background + Background
+  const chooseBackgroundCommanders = cards.filter(isChooseBackgroundCommander);
+  const backgrounds = cards.filter(isBackground);
+  for (const commander of chooseBackgroundCommanders) {
+    for (const background of backgrounds) {
+      addPair(commander, background);
     }
+  }
 
-    return items;
-  });
+  // 5) Doctor + Doctor's companion
+  const doctors = cards.filter(isDoctor);
+  const companions = cards.filter(isDoctorsCompanion);
+  for (const doctor of doctors) {
+    for (const companion of companions) {
+      addPair(doctor, companion);
+    }
+  }
+
+  return [...pairs.values()];
 }
 
-async function getMaxPageInCurrentView(page: Page): Promise<number> {
-  return page.evaluate(() => {
-    const links = [...document.querySelectorAll('a[href*="?page="]')];
-    const numbers = links
-      .map((a) => {
-        const href = a.getAttribute('href') || '';
-        const match = href.match(/[?&]page=(\d+)/i);
-        return match ? Number(match[1]) : 0;
-      })
-      .filter((n) => Number.isInteger(n) && n > 0);
+async function fetchAllCommandersFromScryfall(): Promise<CommanderListItem[]> {
+  console.log('🌐 Obteniendo comandantes legales desde Scryfall...');
 
-    if (numbers.length === 0) return 1;
-    return Math.max(...numbers);
-  });
-}
-
-async function scrapeCategory(browser: Browser, categoryUrl: string): Promise<CommanderListItem[]> {
-  const results: CommanderListItem[] = [];
-  let pageNum = 1;
-  const categorySlug = categoryUrl.replace('/commanders/', '');
+  const sourceCards: CommanderSource[] = [];
   const seenSlugs = new Set<string>();
-  const page = await browser.newPage();
+  let pageCount = 0;
+  let nextUrl: string | null = SCRYFALL_SEARCH_URL;
 
-  try {
-    let maxPageSeen = 1;
+  while (nextUrl) {
+    pageCount++;
 
-    while (true) {
-      const url = `https://edhrec.com/commanders/${categorySlug}?page=${pageNum}`;
-      console.log(`📄 Scrapeando ${url}`);
-
-      let loaded = false;
-      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-        try {
-          await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45_000 });
-          await page.waitForSelector('a.piGH7G_container[href^="/commanders/"]', {
-            state: 'attached',
-            timeout: 20_000,
-          });
-          loaded = true;
-          break;
-        } catch (err: any) {
-          console.warn(`  ⚠️ Intento ${attempt}/${MAX_RETRIES} fallido para ${url}: ${err.message}`);
-          if (attempt < MAX_RETRIES) await sleep(attempt * 5000);
-        }
-      }
-
-      if (!loaded) {
-        console.error(`❌ No se pudo cargar ${url}`);
-        break;
-      }
-
-      const maxInPage = await getMaxPageInCurrentView(page);
-      if (maxInPage > maxPageSeen) maxPageSeen = maxInPage;
-
-      const commanders = await extractCommandersFromPage(page);
-      let addedThisPage = 0;
-      for (const commander of commanders) {
-        if (seenSlugs.has(commander.sanitized)) continue;
-        seenSlugs.add(commander.sanitized);
-        results.push(commander);
-        addedThisPage++;
-      }
-
-      if (addedThisPage === 0) {
-        console.log(`ℹ️ Sin nuevos commanders en ${categorySlug} (page=${pageNum}). Cortando paginación.`);
-        break;
-      }
-
-      if (MAX_PAGES_PER_CATEGORY > 0 && pageNum >= MAX_PAGES_PER_CATEGORY) {
-        console.log(`ℹ️ Límite alcanzado para categoría (${MAX_PAGES_PER_CATEGORY} páginas): ${categorySlug}`);
-        break;
-      }
-
-      if (pageNum >= maxPageSeen) {
-        break;
-      }
-
-      pageNum++;
-      await sleep(DELAY_BETWEEN_PAGES_MS);
+    if (MAX_SCRYFALL_PAGES > 0 && pageCount > MAX_SCRYFALL_PAGES) {
+      console.log(`ℹ️ Límite de prueba alcanzado: ${MAX_SCRYFALL_PAGES} página(s) de Scryfall.`);
+      break;
     }
-  } finally {
-    await page.close();
+
+    const isFirstPage = pageCount === 1;
+    const params = isFirstPage
+      ? {
+          q: SCRYFALL_QUERY,
+        }
+      : undefined;
+
+    console.log(`📄 Descargando página Scryfall ${pageCount}${isFirstPage ? '' : ' (next_page)'}`);
+    const parsed: ScryfallSearchResponse = await getJsonWithRetries<ScryfallSearchResponse>(
+      nextUrl,
+      params
+    );
+
+    const cards = parsed?.data || [];
+    for (const card of cards) {
+      const mapped = mapScryfallCardToCommander(card);
+      if (!mapped) continue;
+      if (seenSlugs.has(mapped.sanitized)) continue;
+
+      seenSlugs.add(mapped.sanitized);
+      sourceCards.push(mapped);
+    }
+
+    nextUrl = parsed?.has_more ? parsed.next_page || null : null;
+
+    if (nextUrl) {
+      await sleep(DELAY_BETWEEN_REQUESTS_MS);
+    }
   }
 
-  return results;
+  if (sourceCards.length === 0) {
+    throw new Error('Scryfall no devolvió comandantes válidos');
+  }
+
+  const singles = sourceCards.map(buildSingleCommanderEntry);
+  const partnerPairs = generateCombinations(sourceCards);
+
+  console.log(`ℹ️ Commanders individuales: ${singles.length}`);
+  console.log(`ℹ️ Combinaciones partner generadas: ${partnerPairs.length}`);
+
+  const output = [...singles, ...partnerPairs];
+  return output;
 }
 
 (async () => {
   try {
-    const allUrls = await getAllCategoryUrls();
-    const allCommanders: CommanderListItem[] = [];
-    const browser = await chromium.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-
-    try {
-      for (const { name, url } of allUrls) {
-        console.log(`\n🔎 Procesando categoría: ${name}`);
-        try {
-          const commanders = await scrapeCategory(browser, url);
-          allCommanders.push(...commanders);
-        } catch (error) {
-          console.error(`❌ Error crítico al procesar ${name}:`, error);
-        }
-        await sleep(DELAY_BETWEEN_CATEGORIES_MS);
-      }
-    } finally {
-      await browser.close();
-    }
+    const allCommanders = await fetchAllCommandersFromScryfall();
 
     const outputPath = path.resolve(__dirname, '../data/all-commanders.json');
     await fs.mkdir(path.dirname(outputPath), { recursive: true });
-    const bySlug = new Map<string, any>();
+    const bySlug = new Map<string, CommanderListItem>();
     for (const commander of allCommanders) {
       const existing = bySlug.get(commander.sanitized);
       if (!existing || commander.decks > existing.decks) {

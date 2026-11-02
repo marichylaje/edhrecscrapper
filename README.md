@@ -27,8 +27,7 @@ También incluye un scraper separado para artículos de EDHREC (`data/articles.j
 ## Stack técnico
 
 - **Node.js + TypeScript**
-- **Playwright** (scraping de páginas dinámicas con `__NEXT_DATA__` y DOM renderizado)
-- **Playwright** (usado en scraper de artículos y utilidades de scraping)
+- **Playwright** (scraper de artículos y utilidades de scraping)
 - **Axios** (descarga de catálogo masivo de Scryfall)
 - **Pinecone SDK** (embeddings + upsert de vectores)
 - **GitHub Actions** (ejecución programada semanal)
@@ -64,15 +63,17 @@ data/
 
 Archivo: `scripts/scrapeCommandersList.playwright.ts`
 
-- Consume `https://json.edhrec.com/pages/commanders/<categoria>.json?page=<n>`.
-- Obtiene categorías desde `related_info`.
-- Recorre paginación por categoría desde el endpoint JSON.
-- Recorre cada categoría y guarda:
+- Consume la API de Scryfall con paginación nativa (`has_more` / `next_page`):
+  - `https://api.scryfall.com/cards/search?q=is%3Acommander+legal%3Acommander`
+- Genera `sanitized` compatible con URLs de EDHREC (`https://edhrec.com/commanders/<slug>`).
+- Genera combinaciones de parejas válidas (Partner, Partner with, Friends forever, Choose a Background, Doctor's companion).
+- Construye la lista maestra y guarda:
   - `name`
   - `decks`
   - `url`
   - `sanitized` (slug)
   - `colors`
+  - `isPartnerPair` (solo en combinaciones)
 - Salida: `data/all-commanders.json`.
 
 ### 2) `scrape:pages`
@@ -185,7 +186,7 @@ Workflow: `.github/workflows/scrape.yml`
 Entradas manuales (`workflow_dispatch`):
 
 - `force_refresh` (`true` por defecto): elimina `data/commanders` antes de scrappear para refrescar sinergias aunque ya existan JSON previos.
-- `max_pages_per_category` (`0` por defecto): limita páginas por categoría (útil para pruebas rápidas).
+- `max_pages_per_category` (`0` por defecto): limita páginas de Scryfall en `scrape:all-commanders` (útil para pruebas rápidas).
 - `pinecone_full_refresh` (`true` por defecto): limpia el namespace antes del upload para evitar datos obsoletos.
 - `pinecone_namespace` (`__default__` por defecto): namespace objetivo en Pinecone.
 
@@ -216,6 +217,7 @@ Array de comandantes con metadata base:
 - `url`
 - `sanitized`
 - `colors`
+- `isPartnerPair` (opcional, `true` en pares de commander/background/doctor-partner)
 
 ### `data/commanders/<slug>.json`
 
@@ -247,6 +249,7 @@ Array de comandantes con metadata base:
 
 - El scraping depende de estructura HTML/CSS de EDHREC; cambios de clases pueden romper selectores.
 - Los scrapers principales de commanders usan endpoint JSON (`json.edhrec.com`) para no depender de `__NEXT_DATA__` ni clases de frontend.
+- `scrape:all-commanders` usa Scryfall como fuente maestra para evitar límites de paginación de EDHREC y mejorar cobertura de comandantes.
 - El paso de compilación reduce llamadas individuales gracias al bulk de Scryfall.
 - La subida a Pinecone serializa `cards` en metadata como string JSON.
 - Hay delays/retries para evitar bloqueos y reducir errores intermitentes de red/rate-limit.

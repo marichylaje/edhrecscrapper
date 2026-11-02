@@ -10,7 +10,7 @@ on:
         required: false
         default: "true"
       max_pages_per_category:
-        description: "Limitar páginas por categoría (0 = sin límite)"
+        description: "Límite de páginas de Scryfall para pruebas (0 = sin límite)"
         required: false
         default: "0"
       pinecone_full_refresh:
