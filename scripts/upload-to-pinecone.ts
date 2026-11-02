@@ -2,6 +2,7 @@
 import 'dotenv/config';
 import fs from 'fs/promises';
 import path from 'path';
+import type { Index } from '@pinecone-database/pinecone';
 import { pinecone } from './pinecone';
 
 const INDEX_NAME = process.env.PINECONE_INDEX_NAME!;
@@ -9,6 +10,7 @@ const INDEX_HOST = process.env.PINECONE_INDEX_HOST!;
 const INDEX_NAMESPACE = process.env.PINECONE_NAMESPACE || '__default__';
 const FULL_REFRESH = String(process.env.PINECONE_FULL_REFRESH || 'false').toLowerCase() === 'true';
 const MAX_BATCH_RETRIES = Number(process.env.PINECONE_MAX_BATCH_RETRIES || 3);
+const MIN_PRUNE_RATIO = Number(process.env.PINECONE_MIN_PRUNE_RATIO || 0.8);
 const FILE_PATH = path.resolve(__dirname, '../data/commander-synergies.json');
 
 // 🔄 Divide array en chunks
@@ -45,9 +47,7 @@ async function uploadToPinecone() {
   console.log(`📍 Namespace: ${INDEX_NAMESPACE}`);
 
   if (FULL_REFRESH) {
-    console.log('🧹 Full refresh habilitado: eliminando vectores existentes del namespace...');
-    await client.deleteAll();
-    console.log('✅ Namespace limpiado');
+    console.log('🧹 Full refresh habilitado: los registros obsoletos se podarán DESPUÉS de subir los nuevos.');
   }
 
   // Preparamos records: id + chunk_text + metadata
@@ -167,6 +167,45 @@ async function uploadToPinecone() {
   }
 
   console.log(`🎉 Upload complete! Processed ${processedCount}/${records.length} records`);
+
+  if (FULL_REFRESH) {
+    await pruneStaleVectors(client, new Set(records.map((r) => r._id)));
+  }
+}
+
+// Elimina del namespace los IDs que ya no están en el dataset nuevo.
+// Solo se ejecuta tras un upload 100% exitoso y con una salvaguarda: si el dataset nuevo es mucho
+// más chico que lo que hay en el índice (scrape parcial), NO se poda nada para no perder datos.
+async function pruneStaleVectors(client: Index, freshIds: Set<string>) {
+  console.log('🧹 Buscando vectores obsoletos en Pinecone...');
+
+  const existingIds: string[] = [];
+  let paginationToken: string | undefined;
+  do {
+    const page = await client.listPaginated({ paginationToken });
+    for (const v of page.vectors || []) {
+      if (v.id) existingIds.push(v.id);
+    }
+    paginationToken = page.pagination?.next;
+  } while (paginationToken);
+
+  const staleIds = existingIds.filter((id) => !freshIds.has(id));
+  console.log(`📊 En índice: ${existingIds.length} | nuevos: ${freshIds.size} | obsoletos: ${staleIds.length}`);
+
+  if (staleIds.length === 0) return;
+
+  if (freshIds.size < existingIds.length * MIN_PRUNE_RATIO) {
+    console.warn(
+      `⚠️ Poda omitida: el dataset nuevo (${freshIds.size}) es menor al ${MIN_PRUNE_RATIO * 100}% del índice ` +
+        `(${existingIds.length}). Probable scrape parcial; se conservan los registros existentes.`
+    );
+    return;
+  }
+
+  for (const ids of chunk(staleIds, 500)) {
+    await client.deleteMany(ids);
+  }
+  console.log(`✅ Eliminados ${staleIds.length} vectores obsoletos`);
 }
 
 uploadToPinecone().catch((error) => {

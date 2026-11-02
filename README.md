@@ -85,7 +85,8 @@ Archivo: `scripts/scrapeAllCommanderPages.ts`
 - Extrae cartas desde `container.json_dict.cardlists`.
 - Conserva por carta la mejor sinergia disponible y normaliza la sinergia a porcentaje entero.
 - Guarda un archivo por comandante en `data/commanders/<slug>.json`.
-- Si el archivo ya existe, lo omite.
+- Si el archivo ya existe y `SCRAPE_FORCE_REFRESH` no está activo, lo omite.
+- Si EDHREC no tiene página para un commander/pareja (403/404), se descarta sin reintentos.
 
 ### 3) `compile:synergies`
 
@@ -177,27 +178,33 @@ Workflow: `.github/workflows/scrape.yml`
   1. checkout
   2. setup Node 20
   3. `npm ci`
-  4. instalación de navegadores Playwright
-  5. scraping completo
-  6. compilación de sinergias
-  7. subida a Pinecone usando secrets
-  8. limpieza de algunos archivos generados
+  4. (si `force_refresh`) limpieza de `data/commanders`
+  5. lista maestra de commanders (Scryfall)
+  6. scraping de páginas de EDHREC (concurrente, con presupuesto de tiempo)
+  7. compilación de sinergias
+  8. subida a Pinecone usando secrets (+ poda de obsoletos)
+  9. limpieza de algunos archivos generados
+
+Cada step tiene su propio `timeout-minutes` y el job un límite de 300 min.
 
 Entradas manuales (`workflow_dispatch`):
 
 - `force_refresh` (`true` por defecto): elimina `data/commanders` antes de scrappear para refrescar sinergias aunque ya existan JSON previos.
 - `max_pages_per_category` (`0` por defecto): limita páginas de Scryfall en `scrape:all-commanders` (útil para pruebas rápidas).
-- `pinecone_full_refresh` (`true` por defecto): limpia el namespace antes del upload para evitar datos obsoletos.
+- `pinecone_full_refresh` (`true` por defecto): tras subir los registros nuevos, poda de Pinecone los IDs que ya no existen en el dataset.
 - `pinecone_namespace` (`__default__` por defecto): namespace objetivo en Pinecone.
 
 Variables de entorno de scraping soportadas por scripts:
 
 - `SCRAPE_FORCE_REFRESH=true|false`
 - `SCRAPE_MAX_PAGES_PER_CATEGORY=<n>` (`0` = sin límite)
-- `SCRAPE_DELAY_MS=<ms>` (default `1500` en `scrape:pages`)
+- `SCRAPE_CONCURRENCY=<n>` (default `5`, workers en paralelo en `scrape:pages`)
+- `SCRAPE_DELAY_MS=<ms>` (default `400`, pausa de cada worker entre peticiones)
+- `SCRAPE_TIME_BUDGET_MINUTES=<n>` (default `0` = sin límite; al agotarse, `scrape:pages` corta limpiamente y el pipeline continúa con lo obtenido)
 - `PINECONE_FULL_REFRESH=true|false`
 - `PINECONE_NAMESPACE=<namespace>`
 - `PINECONE_MAX_BATCH_RETRIES=<n>` (default `3`)
+- `PINECONE_MIN_PRUNE_RATIO=<0-1>` (default `0.8`, ver salvaguarda de poda)
 
 Secrets esperados en GitHub:
 
@@ -255,8 +262,9 @@ Array de comandantes con metadata base:
 - La subida a Pinecone serializa `cards` en metadata como string JSON.
 - Hay delays/retries para evitar bloqueos y reducir errores intermitentes de red/rate-limit.
 - `upload-to-pinecone` ahora falla explícitamente si hay lotes no subidos; así se evita que un run “verde” deje el índice incompleto.
-- Para evitar datos stale en Pinecone, usa `PINECONE_FULL_REFRESH=true` (limpia namespace antes de cargar).
-- `scrape:pages` no aborta por fallos puntuales de commander; continúa, cuenta errores y guarda slugs fallidos en `data/failed-commanders.json`.
+- Para evitar datos stale en Pinecone, usa `PINECONE_FULL_REFRESH=true`: primero se suben/actualizan los registros nuevos y, solo si todos los lotes subieron bien, se podan los IDs obsoletos. Si el dataset nuevo es menor al 80% de lo que hay en el índice (scrape parcial), la poda se omite para no perder datos.
+- `scrape:pages` corre con workers concurrentes. Los 403/404 de EDHREC se tratan como "esa página no existe" (habitual en combinaciones de partners) y se descartan al instante, sin reintentos ni pausas. Solo los errores transitorios (429, 5xx, red) se reintentan con backoff.
+- `scrape:pages` no aborta por fallos puntuales; guarda los slugs con fallo transitorio en `data/failed-commanders.json`. Solo termina con error si no obtuvo ningún commander (señal de que EDHREC cambió o bloquea).
 - `compile:synergies` filtra comandantes sin cartas de sinergia para evitar entradas `cards: []` en el consolidado final.
 
 ### Si el cron deja de correr
