@@ -87,6 +87,7 @@ Archivo: `scripts/scrapeAllCommanderPages.ts`
 - Guarda un archivo por comandante en `data/commanders/<slug>.json`.
 - Si el archivo ya existe y `SCRAPE_FORCE_REFRESH` no está activo, lo omite.
 - Si EDHREC no tiene página para un commander/pareja (403/404), se descarta sin reintentos.
+- Si el slug de una pareja está en otro orden, EDHREC responde `{"redirect": "/commanders/<slug-canónico>"}`; el scraper sigue ese redirect (máx. 3 saltos). Para Backgrounds, la lista maestra ya genera el orden canónico (commander → background).
 
 ### 3) `compile:synergies`
 

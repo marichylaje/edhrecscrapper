@@ -132,10 +132,16 @@ function buildSingleCommanderEntry(card: CommanderSource): CommanderListItem {
   };
 }
 
-function buildPairCommanderEntry(a: CommanderSource, b: CommanderSource): CommanderListItem | null {
+function buildPairCommanderEntry(
+  a: CommanderSource,
+  b: CommanderSource,
+  keepOrder = false
+): CommanderListItem | null {
   if (a.sanitized === b.sanitized) return null;
 
-  const [left, right] = [a, b].sort((x, y) => x.sanitized.localeCompare(y.sanitized));
+  const [left, right] = keepOrder
+    ? [a, b]
+    : [a, b].sort((x, y) => x.sanitized.localeCompare(y.sanitized));
   const pairSlug = `${left.sanitized}-${right.sanitized}`;
 
   return {
@@ -182,8 +188,8 @@ function generateCombinations(cards: CommanderSource[]): CommanderListItem[] {
   const isDoctor = (card: CommanderSource) => /time lord doctor/i.test(card.typeLine);
   const isDoctorsCompanion = (card: CommanderSource) => hasOracleText(card, "doctor's companion");
 
-  const addPair = (a: CommanderSource, b: CommanderSource) => {
-    const pair = buildPairCommanderEntry(a, b);
+  const addPair = (a: CommanderSource, b: CommanderSource, keepOrder = false) => {
+    const pair = buildPairCommanderEntry(a, b, keepOrder);
     if (!pair) return;
     if (!pairs.has(pair.sanitized)) {
       pairs.set(pair.sanitized, pair);
@@ -215,12 +221,12 @@ function generateCombinations(cards: CommanderSource[]): CommanderListItem[] {
     }
   }
 
-  // 4) Choose a Background + Background
+  // 4) Choose a Background + Background (EDHREC usa el orden commander -> background)
   const chooseBackgroundCommanders = cards.filter(isChooseBackgroundCommander);
   const backgrounds = cards.filter(isBackground);
   for (const commander of chooseBackgroundCommanders) {
     for (const background of backgrounds) {
-      addPair(commander, background);
+      addPair(commander, background, true);
     }
   }
 

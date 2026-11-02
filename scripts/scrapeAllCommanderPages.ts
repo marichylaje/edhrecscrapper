@@ -37,6 +37,8 @@ type CommanderJsonCardView = {
 
 type CommanderJsonResponse = {
   header?: string;
+  // Presente cuando el slug existe pero con otro orden (ej. "tymna-...-thrasios-..." -> "/commanders/thrasios-...-tymna-...")
+  redirect?: string;
   container?: {
     json_dict?: {
       cardlists?: Array<{
@@ -66,7 +68,7 @@ function toPercentValue(value: number | undefined): number | null {
   return Math.round(value * 100);
 }
 
-async function fetchCommanderJson(slug: string): Promise<CommanderJsonResponse> {
+async function fetchJsonOnce(slug: string): Promise<CommanderJsonResponse> {
   const url = `${EDHREC_JSON_BASE}/commanders/${slug}.json`;
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
@@ -95,12 +97,33 @@ async function fetchCommanderJson(slug: string): Promise<CommanderJsonResponse> 
   throw new Error(`No se pudo obtener JSON para ${slug} luego de ${MAX_RETRIES} intentos`);
 }
 
+// Sigue los redirects de EDHREC hacia el slug canónico (orden de las parejas).
+async function fetchCommanderJson(slug: string): Promise<CommanderJsonResponse> {
+  let currentSlug = slug;
+  const visited = new Set<string>([slug]);
+
+  for (let hop = 0; hop < 3; hop++) {
+    const data = await fetchJsonOnce(currentSlug);
+    if (!data.redirect) return data;
+
+    const target = data.redirect.replace(/^\/?commanders\//, '').replace(/^\/+|\/+$/g, '');
+    if (!target || visited.has(target)) {
+      throw new NotFoundError(`Redirect inválido o circular para ${slug}`);
+    }
+
+    visited.add(target);
+    currentSlug = target;
+  }
+
+  throw new NotFoundError(`Demasiados redirects para ${slug}`);
+}
+
 async function scrapeCommanderPage(slug: string) {
   const data = await fetchCommanderJson(slug);
 
   const commanderName = parseCommanderNameFromHeader(data.header);
   if (!commanderName) {
-    console.error(`❌ No se pudo parsear el nombre del comandante para ${slug}`);
+    console.warn(`⚠️ Respuesta sin cabecera de comandante para ${slug}; se omite.`);
     return null;
   }
 
