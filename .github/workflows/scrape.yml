@@ -2,21 +2,24 @@ name: EDHREC Sync to Pinecone
 
 on:
   schedule:
+    # Semanal (lunes): modo incremental, solo agrega/actualiza sin borrar nada
     - cron: '0 3 * * 1'
+    # Mensual (día 1): refresh completo, re-scrapea todo y poda Pinecone
+    - cron: '0 3 1 * *'
   workflow_dispatch:
     inputs:
-      force_refresh:
-        description: "Re-scrapear aunque ya existan archivos data/commanders/*.json"
+      mode:
+        description: "incremental = agrega (conserva archivos y Pinecone) | full = re-scrapea todo y poda Pinecone"
+        type: choice
+        options:
+          - incremental
+          - full
         required: false
-        default: "true"
+        default: "incremental"
       max_pages_per_category:
         description: "Límite de páginas de Scryfall para pruebas (0 = sin límite)"
         required: false
         default: "0"
-      pinecone_full_refresh:
-        description: "Podar de Pinecone los registros que ya no existen (se hace tras subir los nuevos)"
-        required: false
-        default: "true"
       pinecone_namespace:
         description: "Namespace de Pinecone"
         required: false
@@ -32,12 +35,14 @@ jobs:
     # Margen holgado: el scrape normal tarda decenas de minutos, el presupuesto de abajo corta antes de este límite.
     timeout-minutes: 300
     env:
-      SCRAPE_FORCE_REFRESH: ${{ github.event.inputs.force_refresh || 'true' }}
+      # El cron mensual corre en modo full; cualquier otro schedule (semanal) es incremental
+      SYNC_MODE: ${{ github.event.schedule == '0 3 1 * *' && 'full' || github.event.inputs.mode || 'incremental' }}
+      SCRAPE_FORCE_REFRESH: ${{ (github.event.schedule == '0 3 1 * *' || github.event.inputs.mode == 'full') && 'true' || 'false' }}
       SCRAPE_MAX_PAGES_PER_CATEGORY: ${{ github.event.inputs.max_pages_per_category || '0' }}
       SCRAPE_CONCURRENCY: '5'
       SCRAPE_DELAY_MS: '400'
       SCRAPE_TIME_BUDGET_MINUTES: '200'
-      PINECONE_FULL_REFRESH: ${{ github.event.inputs.pinecone_full_refresh || 'true' }}
+      PINECONE_FULL_REFRESH: ${{ (github.event.schedule == '0 3 1 * *' || github.event.inputs.mode == 'full') && 'true' || 'false' }}
       PINECONE_NAMESPACE: ${{ github.event.inputs.pinecone_namespace || '__default__' }}
 
     steps:
@@ -52,6 +57,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Show sync mode
+        run: echo "Sync mode = $SYNC_MODE (force refresh = $SCRAPE_FORCE_REFRESH, pinecone prune = $PINECONE_FULL_REFRESH)"
 
       - name: Clean previous commander pages for full refresh
         if: env.SCRAPE_FORCE_REFRESH == 'true'
