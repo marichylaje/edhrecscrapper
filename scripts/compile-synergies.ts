@@ -139,6 +139,11 @@ async function compileSynergies() {
           deckCount: c.deckCount ?? 0,
         }));
 
+      if (topCards.length === 0) {
+        skipped++;
+        continue;
+      }
+
       // Búsqueda instantánea en el mapa local (Cero latencia, cero error 429)
       const commanderId = scryfallIdMap.get(commander.toLowerCase());
       const partnerId = partner ? scryfallIdMap.get(partner.toLowerCase()) : null;

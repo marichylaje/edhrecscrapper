@@ -29,7 +29,7 @@ concurrency:
 jobs:
   scrape-and-upload:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 360
     env:
       SCRAPE_FORCE_REFRESH: ${{ github.event.inputs.force_refresh || 'true' }}
       SCRAPE_MAX_PAGES_PER_CATEGORY: ${{ github.event.inputs.max_pages_per_category || '0' }}

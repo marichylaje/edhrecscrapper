@@ -12,7 +12,7 @@ import axios from 'axios';
 
 const commandersPath = path.resolve(__dirname, '../data/all-commanders.json');
 const outputDir = path.resolve(__dirname, '../data/commanders');
-const DELAY_MS = 2500;
+const DELAY_MS = Number(process.env.SCRAPE_DELAY_MS || 1500);
 const MAX_RETRIES = 3;
 const FORCE_REFRESH = String(process.env.SCRAPE_FORCE_REFRESH || 'false').toLowerCase() === 'true';
 const EDHREC_JSON_BASE = 'https://json.edhrec.com/pages';
@@ -42,6 +42,13 @@ type CommanderJsonResponse = {
   };
 };
 
+class NonRetryableFetchError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'NonRetryableFetchError';
+  }
+}
+
 function parseCommanderNameFromHeader(header?: string): string | null {
   if (!header) return null;
   const cleaned = header.replace(/\s*\(Commander\)\s*$/i, '').trim();
@@ -63,6 +70,11 @@ async function fetchCommanderJson(slug: string): Promise<CommanderJsonResponse> 
       });
       return response.data;
     } catch (err: any) {
+      const status = err?.response?.status;
+      if (status === 403 || status === 404) {
+        throw new NonRetryableFetchError(`No disponible en EDHREC JSON (${status}) para ${slug}`);
+      }
+
       console.warn(`  ⚠️ Intento ${attempt}/${MAX_RETRIES} fallido para ${slug}: ${err.message}`);
       if (attempt < MAX_RETRIES) {
         await sleep(attempt * 5000);
@@ -112,6 +124,10 @@ async function scrapeCommanderPage(slug: string) {
     ...[...byName.values()].sort((a, b) => (b.synergy ?? -9999) - (a.synergy ?? -9999)),
   ];
 
+  if (cards.length <= 1) {
+    return null;
+  }
+
   return { slug, cards };
 }
 
@@ -120,6 +136,10 @@ async function scrapeCommanderPage(slug: string) {
   const commanders = JSON.parse(commandersRaw);
 
   await fs.mkdir(outputDir, { recursive: true });
+  const failedSlugs: string[] = [];
+  let successCount = 0;
+  let skippedCount = 0;
+  let failedCount = 0;
 
   for (const commander of commanders) {
     const slug = commander.sanitized;
@@ -131,6 +151,7 @@ async function scrapeCommanderPage(slug: string) {
         try {
           await fs.access(outputFile);
           console.log(`⏭ Ya existe ${slug}.json, omitido.`);
+          skippedCount++;
           continue;
         } catch {
           // No existe, continuar
@@ -141,13 +162,27 @@ async function scrapeCommanderPage(slug: string) {
       if (data) {
         await fs.writeFile(outputFile, JSON.stringify(data, null, 2));
         console.log(`✅ Guardado ${slug}.json con ${data.cards.length} cartas`);
+        successCount++;
+      } else {
+        console.log(`ℹ️ ${slug} no tiene cartas útiles para sinergias. Omitido.`);
+        skippedCount++;
       }
 
       await sleep(DELAY_MS);
     } catch (err) {
       console.error(`⚠️ Fallo al procesar ciclo de ${slug}: ${err}`);
+      failedSlugs.push(slug);
+      failedCount++;
+      await sleep(250);
     }
   }
 
+  if (failedSlugs.length > 0) {
+    const failedPath = path.resolve(__dirname, '../data/failed-commanders.json');
+    await fs.writeFile(failedPath, JSON.stringify(failedSlugs, null, 2));
+    console.log(`⚠️ Se guardó listado de fallos en ${failedPath}`);
+  }
+
+  console.log(`📊 Resumen scrape:pages -> OK: ${successCount} | Omitidos: ${skippedCount} | Fallidos: ${failedCount}`);
   console.log('🏁 Scrapeo de comandantes finalizado.');
 })();

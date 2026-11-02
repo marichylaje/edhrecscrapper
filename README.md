@@ -194,6 +194,7 @@ Variables de entorno de scraping soportadas por scripts:
 
 - `SCRAPE_FORCE_REFRESH=true|false`
 - `SCRAPE_MAX_PAGES_PER_CATEGORY=<n>` (`0` = sin límite)
+- `SCRAPE_DELAY_MS=<ms>` (default `1500` en `scrape:pages`)
 - `PINECONE_FULL_REFRESH=true|false`
 - `PINECONE_NAMESPACE=<namespace>`
 - `PINECONE_MAX_BATCH_RETRIES=<n>` (default `3`)
@@ -255,6 +256,8 @@ Array de comandantes con metadata base:
 - Hay delays/retries para evitar bloqueos y reducir errores intermitentes de red/rate-limit.
 - `upload-to-pinecone` ahora falla explícitamente si hay lotes no subidos; así se evita que un run “verde” deje el índice incompleto.
 - Para evitar datos stale en Pinecone, usa `PINECONE_FULL_REFRESH=true` (limpia namespace antes de cargar).
+- `scrape:pages` no aborta por fallos puntuales de commander; continúa, cuenta errores y guarda slugs fallidos en `data/failed-commanders.json`.
+- `compile:synergies` filtra comandantes sin cartas de sinergia para evitar entradas `cards: []` en el consolidado final.
 
 ### Si el cron deja de correr
 
