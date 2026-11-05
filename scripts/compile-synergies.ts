@@ -18,6 +18,9 @@ type CardEntry = {
   name: string;
   synergy: number | null;
   deckCount: number | null;
+  percent?: number | null;
+  lift?: number | null;
+  category?: string | null;
 };
 
 type InputData = {
@@ -25,16 +28,78 @@ type InputData = {
   cards: CardEntry[];
 };
 
+type OutputCard = {
+  name: string;
+  synergy: number;
+  deckCount: number;
+  inclusion?: number; // % de mazos del comandante que juegan la carta
+  lift?: number;
+  cat?: string; // código de categoría EDHREC (ma, ul, cr, ...)
+  staple?: true; // viene del grupo de alta inclusión, no del de sinergia
+};
+
 type OutputRow = {
   id: string;
   commander: string;
   partner: string | null;
-  cards: {
-    name: string;
-    synergy: number;
-    deckCount: number;
-  }[];
+  cards: OutputCard[];
 };
+
+const SYNERGY_POOL_SIZE = 100;
+const STAPLE_POOL_SIZE = 30;
+const STAPLE_MIN_INCLUSION = 30;
+const MIN_DECKS_FOR_SYNERGY = 3;
+const BASIC_LANDS = new Set(['plains', 'island', 'swamp', 'mountain', 'forest', 'wastes']);
+
+const frontFace = (name: string) => name.split(' // ')[0].trim();
+
+// Sinergia ponderada por confianza: un synergy alto con pocos mazos es ruido.
+const confidence = (c: CardEntry) => (c.synergy ?? 0) * Math.log10(2 + (c.deckCount ?? 0));
+
+function toOutputCard(c: CardEntry, staple = false): OutputCard {
+  const out: OutputCard = {
+    name: frontFace(c.name),
+    synergy: c.synergy as number,
+    deckCount: c.deckCount ?? 0,
+  };
+  if (typeof c.percent === 'number') out.inclusion = c.percent;
+  if (typeof c.lift === 'number') out.lift = c.lift;
+  if (c.category) out.cat = c.category;
+  if (staple) out.staple = true;
+  return out;
+}
+
+/**
+ * Selecciona hasta 100 cartas de sinergia (synergy > 0, ponderadas por nº de mazos)
+ * más hasta 30 "staples" por inclusión que no entraron en el primer grupo.
+ * Deduplica por cara frontal (EDHREC mezcla "A" y "A // B").
+ */
+function selectCards(allCards: CardEntry[]): OutputCard[] {
+  const byFront = new Map<string, CardEntry>();
+  for (const c of allCards) {
+    if (!c?.name || typeof c.synergy !== 'number') continue;
+    const key = frontFace(c.name).toLowerCase();
+    const prev = byFront.get(key);
+    if (!prev || (c.synergy ?? -Infinity) > (prev.synergy ?? -Infinity)) byFront.set(key, c);
+  }
+  const unique = [...byFront.values()];
+
+  const positive = unique.filter((c) => (c.synergy ?? 0) > 0);
+  const confident = positive.filter((c) => (c.deckCount ?? 0) >= MIN_DECKS_FOR_SYNERGY);
+  // Comandantes de nicho: si casi no hay cartas con mazos suficientes, no exigir el mínimo
+  const synergyBase = confident.length >= 8 ? confident : positive;
+  const synergyPick = synergyBase.sort((a, b) => confidence(b) - confidence(a)).slice(0, SYNERGY_POOL_SIZE);
+
+  const picked = new Set(synergyPick.map((c) => frontFace(c.name).toLowerCase()));
+  const staplePick = unique
+    .filter((c) => !picked.has(frontFace(c.name).toLowerCase()))
+    .filter((c) => !BASIC_LANDS.has(frontFace(c.name).toLowerCase()))
+    .filter((c) => (c.percent ?? 0) >= STAPLE_MIN_INCLUSION)
+    .sort((a, b) => (b.percent ?? 0) - (a.percent ?? 0))
+    .slice(0, STAPLE_POOL_SIZE);
+
+  return [...synergyPick.map((c) => toOutputCard(c)), ...staplePick.map((c) => toOutputCard(c, true))];
+}
 
 type ScryfallBulkInfoItem = {
   type: string;
@@ -127,17 +192,8 @@ async function compileSynergies() {
       const commander = rawCommander?.trim();
       const partner = rawPartner ? rawPartner.trim() : null;
 
-      // Top 120 por synergy
-      const topCards = json.cards
-        .slice(1)
-        .filter((c) => typeof c.synergy === 'number')
-        .sort((a, b) => (b.synergy! - a.synergy!))
-        .slice(0, 120)
-        .map((c) => ({
-          name: c.name,
-          synergy: c.synergy as number,
-          deckCount: c.deckCount ?? 0,
-        }));
+      // Grupo de sinergia (top 100 ponderado) + grupo de staples por inclusión
+      const topCards = selectCards(json.cards.slice(1));
 
       if (topCards.length === 0) {
         skipped++;

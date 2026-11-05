@@ -33,6 +33,8 @@ type CommanderJsonCardView = {
   name?: string;
   synergy?: number;
   num_decks?: number;
+  potential_decks?: number;
+  lift?: number;
 };
 
 type CommanderJsonResponse = {
@@ -42,10 +44,26 @@ type CommanderJsonResponse = {
   container?: {
     json_dict?: {
       cardlists?: Array<{
+        tag?: string;
         cardviews?: CommanderJsonCardView[];
       }>;
     };
   };
+};
+
+// Categorías de EDHREC con información funcional/tipo → código corto (ahorra bytes en metadata).
+// Las listas "topcards", "highliftcards" y "newcards" no aportan categoría.
+const CATEGORY_BY_TAG: Record<string, string> = {
+  manaartifacts: 'ma',
+  utilityartifacts: 'ua',
+  utilitylands: 'ul',
+  lands: 'la',
+  creatures: 'cr',
+  instants: 'in',
+  sorceries: 'so',
+  enchantments: 'en',
+  planeswalkers: 'pw',
+  battles: 'ba',
 };
 
 // EDHREC sirve estos JSON desde un bucket: 403/404 significa "esta página no existe"
@@ -128,31 +146,49 @@ async function scrapeCommanderPage(slug: string) {
   }
 
   const cardlists = data?.container?.json_dict?.cardlists || [];
-  const byName = new Map<string, { name: string; percent: number | null; deckCount: number | null; synergy: number | null }>();
+  type Entry = {
+    name: string;
+    percent: number | null;
+    deckCount: number | null;
+    synergy: number | null;
+    lift: number | null;
+    category: string | null;
+  };
+  const byName = new Map<string, Entry>();
 
   for (const list of cardlists) {
+    const category = list.tag ? CATEGORY_BY_TAG[list.tag] ?? null : null;
     for (const card of list.cardviews || []) {
       if (!card.name) continue;
       const synergy = toPercentValue(card.synergy);
       if (synergy === null) continue;
 
       const deckCount = typeof card.num_decks === 'number' ? card.num_decks : null;
-      const entry = {
+      const potential = typeof card.potential_decks === 'number' ? card.potential_decks : 0;
+      const entry: Entry = {
         name: card.name,
-        percent: null,
+        // % de mazos del comandante que incluyen la carta
+        percent: deckCount !== null && potential > 0 ? Math.round((deckCount / potential) * 100) : null,
         deckCount,
         synergy,
+        lift: typeof card.lift === 'number' ? Math.round(card.lift * 100) / 100 : null,
+        category,
       };
 
       const previous = byName.get(card.name);
-      if (!previous || (entry.synergy ?? -9999) > (previous.synergy ?? -9999)) {
+      if (!previous) {
         byName.set(card.name, entry);
+        continue;
       }
+      // Conserva el mejor synergy pero no pierde la categoría si solo una lista la trae
+      const best = (entry.synergy ?? -9999) > (previous.synergy ?? -9999) ? entry : previous;
+      best.category = best.category ?? entry.category ?? previous.category;
+      byName.set(card.name, best);
     }
   }
 
   const cards = [
-    { name: commanderName, percent: null, deckCount: null, synergy: null },
+    { name: commanderName, percent: null, deckCount: null, synergy: null, lift: null, category: null },
     ...[...byName.values()].sort((a, b) => (b.synergy ?? -9999) - (a.synergy ?? -9999)),
   ];
 

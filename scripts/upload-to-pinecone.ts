@@ -30,8 +30,35 @@ type Entry = {
   id: string; // <-- ya viene con <commanderId>[__<partnerId>]
   commander: string;
   partner: string | null;
-  cards: { name: string; synergy: number; deckCount: number }[];
+  cards: {
+    name: string;
+    synergy: number;
+    deckCount: number;
+    inclusion?: number;
+    lift?: number;
+    cat?: string;
+    staple?: true;
+  }[];
 };
+
+// Pinecone permite 40 KB de metadata por vector; dejamos margen para el resto de campos.
+const MAX_CARDS_JSON_BYTES = 36_000;
+
+// Recorta desde el final (staples primero, luego las de menor confianza) hasta entrar en el límite.
+function serializeCardsWithinLimit(cards: Entry['cards']): string {
+  let json = JSON.stringify(cards);
+  let size = Buffer.byteLength(json, 'utf8');
+  if (size <= MAX_CARDS_JSON_BYTES) return json;
+
+  const trimmed = [...cards];
+  while (trimmed.length > 1 && size > MAX_CARDS_JSON_BYTES) {
+    trimmed.pop();
+    json = JSON.stringify(trimmed);
+    size = Buffer.byteLength(json, 'utf8');
+  }
+  console.warn(`⚠️ cards recortado a ${trimmed.length}/${cards.length} por límite de metadata`);
+  return json;
+}
 
 async function uploadToPinecone() {
   const client = pinecone.index(INDEX_NAME, INDEX_HOST).namespace(INDEX_NAMESPACE);
@@ -52,7 +79,9 @@ async function uploadToPinecone() {
 
   // Preparamos records: id + chunk_text + metadata
   const records = commanders.map((entry) => {
+    // Solo el grupo de sinergia (no staples) define el texto embebido
     const synergySummary = entry.cards
+      .filter((c) => !c.staple)
       .slice(0, 20)
       .map((c) => `${c.name} (${c.synergy})`)
       .join(', ');
@@ -110,7 +139,8 @@ async function uploadToPinecone() {
           metadata: {
             commander: r.commander,
             partner: r.partner ?? '',
-            cards: JSON.stringify(r.cards),
+            cards: serializeCardsWithinLimit(r.cards),
+            schema: 2,
           },
         }));
 
