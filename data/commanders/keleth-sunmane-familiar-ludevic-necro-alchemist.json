@@ -5,1807 +5,2409 @@
       "name": "Keleth, Sunmane Familiar // Ludevic, Necro-Alchemist",
       "percent": null,
       "deckCount": null,
-      "synergy": null
+      "synergy": null,
+      "lift": null,
+      "category": null
     },
     {
       "name": "The Queen of Dale",
-      "percent": null,
+      "percent": 50,
       "deckCount": 1,
-      "synergy": 46
+      "synergy": 46,
+      "lift": 14.1,
+      "category": "cr"
     },
     {
       "name": "Flawless Maneuver",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 45
+      "synergy": 45,
+      "lift": 4.6,
+      "category": null
     },
     {
       "name": "Preordain",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 43
+      "synergy": 43,
+      "lift": 4.13,
+      "category": null
     },
     {
       "name": "Duelist's Heritage",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 41
+      "synergy": 41,
+      "lift": 29.51,
+      "category": "en"
     },
     {
       "name": "Legion Leadership",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 37
+      "synergy": 37,
+      "lift": 7.43,
+      "category": "in"
     },
     {
       "name": "An Offer You Can't Refuse",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 35
+      "synergy": 35,
+      "lift": 2.49,
+      "category": null
     },
     {
       "name": "Stroke of Midnight",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 35
+      "synergy": 35,
+      "lift": 5.59,
+      "category": "in"
     },
     {
       "name": "Bident of Thassa",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 34
+      "synergy": 34,
+      "lift": 5.3,
+      "category": "ua"
     },
     {
       "name": "Commander's Sphere",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 32
+      "synergy": 32,
+      "lift": 4.58,
+      "category": "ma"
     },
     {
       "name": "Sacred Foundry",
-      "percent": null,
+      "percent": 71,
       "deckCount": 5,
-      "synergy": 30
+      "synergy": 30,
+      "lift": 1.67,
+      "category": "la"
     },
     {
       "name": "Arid Mesa",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 30
+      "synergy": 30,
+      "lift": 2.09,
+      "category": "la"
     },
     {
       "name": "Scalding Tarn",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 30
-    },
-    {
-      "name": "Azorius Signet",
-      "percent": null,
-      "deckCount": 4,
-      "synergy": 29
-    },
-    {
-      "name": "Steam Vents",
-      "percent": null,
-      "deckCount": 5,
-      "synergy": 29
-    },
-    {
-      "name": "Discerning Financier",
-      "percent": null,
-      "deckCount": 2,
-      "synergy": 28
-    },
-    {
-      "name": "Red Death, Shipwrecker",
-      "percent": null,
-      "deckCount": 2,
-      "synergy": 28
-    },
-    {
-      "name": "Alms Collector",
-      "percent": null,
-      "deckCount": 2,
-      "synergy": 28
-    },
-    {
-      "name": "Overmaster",
-      "percent": null,
-      "deckCount": 2,
-      "synergy": 28
-    },
-    {
-      "name": "Winds of Change",
-      "percent": null,
-      "deckCount": 2,
-      "synergy": 28
-    },
-    {
-      "name": "Mask of Memory",
-      "percent": null,
-      "deckCount": 2,
-      "synergy": 28
-    },
-    {
-      "name": "Psychic Impetus",
-      "percent": null,
-      "deckCount": 2,
-      "synergy": 28
-    },
-    {
-      "name": "Rite of the Raging Storm",
-      "percent": null,
-      "deckCount": 2,
-      "synergy": 28
+      "synergy": 30,
+      "lift": 2.11,
+      "category": "la"
     },
     {
       "name": "Izzet Signet",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 28
+      "synergy": 29,
+      "lift": 2.14,
+      "category": "ma"
+    },
+    {
+      "name": "Azorius Signet",
+      "percent": 57,
+      "deckCount": 4,
+      "synergy": 29,
+      "lift": 2.16,
+      "category": "ma"
+    },
+    {
+      "name": "Steam Vents",
+      "percent": 71,
+      "deckCount": 5,
+      "synergy": 29,
+      "lift": 1.67,
+      "category": "la"
+    },
+    {
+      "name": "Discerning Financier",
+      "percent": 29,
+      "deckCount": 2,
+      "synergy": 28,
+      "lift": 108.23,
+      "category": "cr"
+    },
+    {
+      "name": "Red Death, Shipwrecker",
+      "percent": 29,
+      "deckCount": 2,
+      "synergy": 28,
+      "lift": 43.48,
+      "category": "cr"
+    },
+    {
+      "name": "Alms Collector",
+      "percent": 29,
+      "deckCount": 2,
+      "synergy": 28,
+      "lift": 48.05,
+      "category": "cr"
+    },
+    {
+      "name": "Overmaster",
+      "percent": 29,
+      "deckCount": 2,
+      "synergy": 28,
+      "lift": 35.18,
+      "category": "so"
+    },
+    {
+      "name": "Winds of Change",
+      "percent": 29,
+      "deckCount": 2,
+      "synergy": 28,
+      "lift": 50.58,
+      "category": "so"
+    },
+    {
+      "name": "Mask of Memory",
+      "percent": 29,
+      "deckCount": 2,
+      "synergy": 28,
+      "lift": 35.15,
+      "category": "ua"
+    },
+    {
+      "name": "Psychic Impetus",
+      "percent": 29,
+      "deckCount": 2,
+      "synergy": 28,
+      "lift": 106.46,
+      "category": "en"
+    },
+    {
+      "name": "Rite of the Raging Storm",
+      "percent": 29,
+      "deckCount": 2,
+      "synergy": 28,
+      "lift": 80.96,
+      "category": "en"
     },
     {
       "name": "Hallowed Fountain",
-      "percent": null,
+      "percent": 71,
       "deckCount": 5,
-      "synergy": 28
+      "synergy": 28,
+      "lift": 1.63,
+      "category": "la"
     },
     {
       "name": "Sea of Clouds",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 28
+      "synergy": 28,
+      "lift": 1.97,
+      "category": "la"
     },
     {
       "name": "Pippin, Guard of the Citadel",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 27
+      "synergy": 27,
+      "lift": 16.81,
+      "category": "cr"
     },
     {
       "name": "Kediss, Emberclaw Familiar",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 27
+      "synergy": 27,
+      "lift": 21.85,
+      "category": "cr"
     },
     {
       "name": "Lizard Blades",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 27
+      "synergy": 27,
+      "lift": 25.13,
+      "category": "cr"
     },
     {
       "name": "Invert Polarity",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 27
+      "synergy": 27,
+      "lift": 16.08,
+      "category": "in"
     },
     {
       "name": "Combat Research",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 27
+      "synergy": 27,
+      "lift": 25.9,
+      "category": "en"
     },
     {
       "name": "Spectator Seating",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 27
+      "synergy": 27,
+      "lift": 1.91,
+      "category": "la"
     },
     {
       "name": "Training Center",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 27
+      "synergy": 27,
+      "lift": 1.96,
+      "category": "la"
     },
     {
       "name": "Flooded Strand",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 27
+      "synergy": 27,
+      "lift": 1.93,
+      "category": "la"
     },
     {
       "name": "Forbidden Orchard",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 27
+      "synergy": 27,
+      "lift": 21.93,
+      "category": "la"
     },
     {
       "name": "Frantic Search",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 26
+      "synergy": 26,
+      "lift": 2.68,
+      "category": "in"
     },
     {
       "name": "Ponder",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 26
+      "synergy": 26,
+      "lift": 2.57,
+      "category": "so"
     },
     {
       "name": "Aggravated Assault",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 26
+      "synergy": 26,
+      "lift": 11.94,
+      "category": "en"
     },
     {
       "name": "Voice of Victory",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 25
+      "synergy": 25,
+      "lift": 7.42,
+      "category": "cr"
     },
     {
       "name": "Mother of Runes",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 25
+      "synergy": 25,
+      "lift": 8.56,
+      "category": "cr"
     },
     {
       "name": "Herald of Secret Streams",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 25
+      "synergy": 25,
+      "lift": 7.35,
+      "category": "cr"
     },
     {
       "name": "Arcane Denial",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 25
+      "synergy": 25,
+      "lift": 2.43,
+      "category": "in"
     },
     {
       "name": "Untimely Malfunction",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 25
+      "synergy": 25,
+      "lift": 8.53,
+      "category": "in"
     },
     {
       "name": "Slip Through Space",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 25
+      "synergy": 25,
+      "lift": 9.17,
+      "category": "so"
     },
     {
       "name": "Curiosity",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 25
+      "synergy": 25,
+      "lift": 7.76,
+      "category": "en"
     },
     {
       "name": "Aqueous Form",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 25
+      "synergy": 25,
+      "lift": 9.46,
+      "category": "en"
     },
     {
       "name": "Selfless Spirit",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 24
+      "synergy": 24,
+      "lift": 6.48,
+      "category": "cr"
     },
     {
       "name": "Dovin's Veto",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 24
+      "synergy": 24,
+      "lift": 2.16,
+      "category": "in"
     },
     {
       "name": "Force of Negation",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 24
+      "synergy": 24,
+      "lift": 6.1,
+      "category": "in"
     },
     {
       "name": "Enter the Enigma",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 24
+      "synergy": 24,
+      "lift": 7.36,
+      "category": "so"
     },
     {
       "name": "Rogue's Passage",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 24
+      "synergy": 24,
+      "lift": 2.37,
+      "category": "ul"
     },
     {
       "name": "Brainstorm",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 23
+      "synergy": 23,
+      "lift": 2.14,
+      "category": "in"
     },
     {
       "name": "Rapid Hybridization",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 23
+      "synergy": 23,
+      "lift": 4.93,
+      "category": "in"
     },
     {
       "name": "Silence",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 23
+      "synergy": 23,
+      "lift": 5.08,
+      "category": "in"
     },
     {
       "name": "Wear // Tear",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 23
+      "synergy": 23,
+      "lift": 5.14,
+      "category": "in"
     },
     {
       "name": "Deflecting Palm",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 23
+      "synergy": 23,
+      "lift": 5.46,
+      "category": "in"
     },
     {
       "name": "Mithril Coat",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 23
+      "synergy": 23,
+      "lift": 5.36,
+      "category": "ua"
     },
     {
       "name": "Wooded Foothills",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 23
+      "synergy": 23,
+      "lift": 5.19,
+      "category": "la"
     },
     {
       "name": "Misty Rainforest",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 22
+      "synergy": 22,
+      "lift": 4.51,
+      "category": "la"
     },
     {
       "name": "Polluted Delta",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 22
+      "synergy": 22,
+      "lift": 4.19,
+      "category": "la"
     },
     {
       "name": "Combat Celebrant",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 21
+      "synergy": 21,
+      "lift": 4,
+      "category": "cr"
     },
     {
       "name": "Gitaxian Probe",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 21
+      "synergy": 21,
+      "lift": 4.15,
+      "category": "so"
     },
     {
       "name": "Sunbillow Verge",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 21
+      "synergy": 21,
+      "lift": 3.53,
+      "category": "la"
     },
     {
       "name": "Professional Face-Breaker",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 20
+      "synergy": 20,
+      "lift": 3.08,
+      "category": "cr"
     },
     {
       "name": "Speedball, New Warrior",
-      "percent": null,
+      "percent": 20,
       "deckCount": 1,
-      "synergy": 20
+      "synergy": 20,
+      "lift": 232,
+      "category": "cr"
     },
     {
       "name": "Lightning Bolt",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 20
+      "synergy": 20,
+      "lift": 3.32,
+      "category": "in"
     },
     {
       "name": "Windfall",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 20
+      "synergy": 20,
+      "lift": 3.85,
+      "category": "so"
     },
     {
       "name": "Wayfarer's Bauble",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 20
+      "synergy": 20,
+      "lift": 3.61,
+      "category": "ua"
     },
     {
       "name": "Forum Filibuster",
-      "percent": null,
+      "percent": 20,
       "deckCount": 1,
-      "synergy": 20
+      "synergy": 20,
+      "lift": 582.53,
+      "category": "en"
     },
     {
       "name": "Thought Vessel",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 20
+      "synergy": 20,
+      "lift": 1.85,
+      "category": "ma"
     },
     {
       "name": "Riverpyre Verge",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 20
+      "synergy": 20,
+      "lift": 3.41,
+      "category": "la"
     },
     {
       "name": "Thrummingbird",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 19
+      "synergy": 19,
+      "lift": 2.54,
+      "category": "cr"
     },
     {
       "name": "Lightning Greaves",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 19
+      "synergy": 19,
+      "lift": 1.8,
+      "category": "ua"
     },
     {
       "name": "Floodfarm Verge",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 19
+      "synergy": 19,
+      "lift": 2.98,
+      "category": "la"
     },
     {
       "name": "Consider",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 18
+      "synergy": 18,
+      "lift": 2.66,
+      "category": "in"
     },
     {
       "name": "Swiftfoot Boots",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 18
+      "synergy": 18,
+      "lift": 1.75,
+      "category": "ua"
     },
     {
       "name": "Mind Stone",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 18
+      "synergy": 18,
+      "lift": 2.87,
+      "category": "ma"
     },
     {
       "name": "Farewell",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 17
+      "synergy": 17,
+      "lift": 2.81,
+      "category": "so"
     },
     {
       "name": "Frostcliff Siege",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 17
+      "synergy": 17,
+      "lift": 2.33,
+      "category": "en"
     },
     {
       "name": "Boros Signet",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 17
+      "synergy": 17,
+      "lift": 1.8,
+      "category": "ma"
     },
     {
       "name": "Clifftop Retreat",
-      "percent": null,
+      "percent": 71,
       "deckCount": 5,
-      "synergy": 17
+      "synergy": 17,
+      "lift": 1.29,
+      "category": "la"
     },
     {
       "name": "Cascade Bluffs",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 17
+      "synergy": 17,
+      "lift": 1.6,
+      "category": "la"
     },
     {
       "name": "Tundra",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 17
+      "synergy": 17,
+      "lift": 2.49,
+      "category": "la"
     },
     {
       "name": "Volcanic Island",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 17
+      "synergy": 17,
+      "lift": 2.51,
+      "category": "la"
     },
     {
       "name": "Plateau",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 17
+      "synergy": 17,
+      "lift": 2.51,
+      "category": "la"
     },
     {
       "name": "Faithless Looting",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 16
+      "synergy": 16,
+      "lift": 2.35,
+      "category": "so"
     },
     {
       "name": "Beyond the Quiet",
-      "percent": null,
+      "percent": 17,
       "deckCount": 1,
-      "synergy": 16
+      "synergy": 16,
+      "lift": 55.46,
+      "category": "so"
     },
     {
       "name": "Sulfur Falls",
-      "percent": null,
+      "percent": 71,
       "deckCount": 5,
-      "synergy": 16
+      "synergy": 16,
+      "lift": 1.26,
+      "category": "la"
     },
     {
       "name": "Opt",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 15
+      "synergy": 15,
+      "lift": 2.17,
+      "category": "in"
     },
     {
       "name": "Glacial Fortress",
-      "percent": null,
+      "percent": 71,
       "deckCount": 5,
-      "synergy": 15
+      "synergy": 15,
+      "lift": 1.23,
+      "category": "la"
     },
     {
       "name": "Master of Ceremonies",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 31.35,
+      "category": "cr"
     },
     {
       "name": "Goblin Guide",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 173.21,
+      "category": "cr"
     },
     {
       "name": "Stratus Dancer",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 154.81,
+      "category": "cr"
     },
     {
       "name": "Gingerbrute",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 15.32,
+      "category": "cr"
     },
     {
       "name": "Treasure Nabber",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 22.15,
+      "category": "cr"
     },
     {
       "name": "Mocking Doppelganger",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 56.28,
+      "category": "cr"
     },
     {
       "name": "Immard, the Stormcleaver",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 69.74,
+      "category": "cr"
     },
     {
       "name": "Willbender",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 391.33,
+      "category": "cr"
     },
     {
       "name": "Goblin Tomb Raider",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 918.76,
+      "category": "cr"
     },
     {
       "name": "Dulcet Sirens",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 880.48,
+      "category": "cr"
     },
     {
       "name": "Courtly Provocateur",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 1006.27,
+      "category": "cr"
     },
     {
       "name": "Torch Courier",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 98.98,
+      "category": "cr"
     },
     {
       "name": "Kyren Legate",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 6037.59,
+      "category": "cr"
     },
     {
       "name": "Basandra, Battle Seraph",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 238.77,
+      "category": "cr"
     },
     {
       "name": "Serene Master",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 106.19,
+      "category": "cr"
     },
     {
       "name": "Dreadhorde Arcanist",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 36.78,
+      "category": "cr"
     },
     {
       "name": "Daxos of Meletis",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 91.68,
+      "category": "cr"
     },
     {
       "name": "Humbling Elder",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 133.32,
+      "category": "cr"
     },
     {
       "name": "Deflecting Swat",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 2,
+      "category": "in"
     },
     {
       "name": "Fierce Guardianship",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 2.05,
+      "category": "in"
     },
     {
       "name": "Mogg Salvage",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 145.73,
+      "category": "in"
     },
     {
       "name": "Boros Fury-Shield",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 60.29,
+      "category": "in"
     },
     {
       "name": "Entrapment Maneuver",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 89.16,
+      "category": "in"
     },
     {
       "name": "Lightning Storm",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 939.18,
+      "category": "in"
     },
     {
       "name": "Domineering Will",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 54.67,
+      "category": "in"
     },
     {
       "name": "Not on My Watch",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 192.11,
+      "category": "in"
     },
     {
       "name": "Envelop",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 603.76,
+      "category": "in"
     },
     {
       "name": "Downsize",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 571.12,
+      "category": "in"
     },
     {
       "name": "Disrupt",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 83.2,
+      "category": "in"
     },
     {
       "name": "Lightning Axe",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 123.94,
+      "category": "in"
     },
     {
       "name": "Song of Totentanz",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 26.97,
+      "category": "so"
     },
     {
       "name": "Mutiny",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 157.11,
+      "category": "so"
     },
     {
       "name": "Chain Lightning",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 53.16,
+      "category": "so"
     },
     {
       "name": "Council's Judgment",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 30.87,
+      "category": "so"
     },
     {
       "name": "Mob Verdict",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 130.04,
+      "category": "so"
     },
     {
       "name": "Recommission",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 62.34,
+      "category": "so"
     },
     {
       "name": "Jeskai Monument",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 24.25,
+      "category": "ua"
     },
     {
       "name": "Sword of the Chosen",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 621.52,
+      "category": "ua"
     },
     {
       "name": "Vial of Poison",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 2113.16,
+      "category": "ua"
     },
     {
       "name": "Essence Reliquary",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 210.26,
+      "category": "ua"
     },
     {
       "name": "Bloodthirsty Blade",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 28.56,
+      "category": "ua"
     },
     {
       "name": "Portal of Sanctuary",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 716.32,
+      "category": "ua"
     },
     {
       "name": "Hidden Footblade",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 135.03,
+      "category": "ua"
     },
     {
       "name": "Coercive Portal",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 232.22,
+      "category": "ua"
     },
     {
       "name": "Bear Trap",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 1760.96,
+      "category": "ua"
     },
     {
       "name": "Jeskai Ascendancy",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 2.1,
+      "category": "en"
     },
     {
       "name": "Rune of Sustenance",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 136.33,
+      "category": "en"
     },
     {
       "name": "Staggering Insight",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 24.42,
+      "category": "en"
     },
     {
       "name": "Curious Obsession",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 69.97,
+      "category": "en"
     },
     {
       "name": "Noble Heritage",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 43.04,
+      "category": "en"
     },
     {
       "name": "Veteran Soldier",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 313.06,
+      "category": "en"
     },
     {
       "name": "Stoneskin",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 173.21,
+      "category": "en"
     },
     {
       "name": "Sword Coast Sailor",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 41.76,
+      "category": "en"
     },
     {
       "name": "Fresh Start",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 98.29,
+      "category": "en"
     },
     {
       "name": "Shielded by Faith",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 60.46,
+      "category": "en"
     },
     {
       "name": "Rune of Flight",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 154.25,
+      "category": "en"
     },
     {
       "name": "Oath of Lieges",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 59.53,
+      "category": "en"
     },
     {
       "name": "Fire-Rim Form",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 211.32,
+      "category": "en"
     },
     {
       "name": "Rune of Speed",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 174.64,
+      "category": "en"
     },
     {
       "name": "Aboshan's Desire",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 355.15,
+      "category": "en"
     },
     {
       "name": "Betrayal",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 216.73,
+      "category": "en"
     },
     {
       "name": "Guild Artisan",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 42.69,
+      "category": "en"
     },
     {
       "name": "Twinblade Blessing",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 58.78,
+      "category": "en"
     },
     {
       "name": "Coalition Flag",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 1565.3,
+      "category": "en"
     },
     {
       "name": "Redemption Arc",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 56.58,
+      "category": "en"
     },
     {
       "name": "Feywild Visitor",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 140.88,
+      "category": "en"
     },
     {
       "name": "Curse of the Nightly Hunt",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 77.55,
+      "category": "en"
     },
     {
       "name": "Flaming Fist",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 37.6,
+      "category": "en"
     },
     {
       "name": "Telepathy",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 76.84,
+      "category": "en"
     },
     {
       "name": "The War Games",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 578.95,
+      "category": "en"
     },
     {
       "name": "Backfire",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 741.46,
+      "category": "en"
     },
     {
       "name": "Tenuous Truce",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 34.44,
+      "category": "en"
     },
     {
       "name": "Jeska, Thrice Reborn",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 38.81,
+      "category": "pw"
     },
     {
       "name": "Kor Haven",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 25.2,
+      "category": "ul"
     },
     {
       "name": "Mystifying Maze",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 83.86,
+      "category": "ul"
     },
     {
       "name": "Eiganjo Castle",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 47.17,
+      "category": "ul"
     },
     {
       "name": "Hammerheim",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 94.97,
+      "category": "ul"
     },
     {
       "name": "Forbidding Watchtower",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 270.92,
+      "category": "ul"
     },
     {
       "name": "Talisman of Conviction",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 1.37,
+      "category": "ma"
     },
     {
       "name": "Spectral Searchlight",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 102.58,
+      "category": "ma"
     },
     {
       "name": "Bounty Board",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 162.55,
+      "category": "ma"
     },
     {
       "name": "Path of Ancestry",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 1.46,
+      "category": "la"
     },
     {
       "name": "Beyeen Veil",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 14
+      "synergy": 14,
+      "lift": 73.12,
+      "category": "la"
     },
     {
       "name": "Thassa's Oracle",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 11.9,
+      "category": "cr"
     },
     {
       "name": "Giver of Runes",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 13.69,
+      "category": "cr"
     },
     {
       "name": "Thalia, Heretic Cathar",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 8.83,
+      "category": "cr"
     },
     {
       "name": "Suppressor Skyguard",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 16.24,
+      "category": "cr"
     },
     {
       "name": "Temur Battle Rage",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 9.83,
+      "category": "in"
     },
     {
       "name": "Parting Gust",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 10.77,
+      "category": "in"
     },
     {
       "name": "Take the Bait",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 10.37,
+      "category": "in"
     },
     {
       "name": "Lightning Helix",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 9.44,
+      "category": "in"
     },
     {
       "name": "Resculpt",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 15.45,
+      "category": "in"
     },
     {
       "name": "Seize the Spoils",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 12.34,
+      "category": "so"
     },
     {
       "name": "Starfall Invocation",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 16.82,
+      "category": "so"
     },
     {
       "name": "Crawlspace",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 13.83,
+      "category": "ua"
     },
     {
       "name": "Robe of Stars",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 15.31,
+      "category": "ua"
     },
     {
       "name": "Darksteel Plate",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 8.83,
+      "category": "ua"
     },
     {
       "name": "Counterbalance",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 20.11,
+      "category": "en"
     },
     {
       "name": "Powerbalance",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 15.75,
+      "category": "en"
     },
     {
       "name": "Shiny Impetus",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 11.14,
+      "category": "en"
     },
     {
       "name": "Curse of Verbosity",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 17.75,
+      "category": "en"
     },
     {
       "name": "Shinka, the Bloodsoaked Keep",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 16.78,
+      "category": "ul"
     },
     {
       "name": "Sunhome, Fortress of the Legion",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 10.44,
+      "category": "ul"
     },
     {
       "name": "Cephalid Coliseum",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 13
+      "synergy": 13,
+      "lift": 16.72,
+      "category": "ul"
     },
     {
       "name": "Leonin Lightscribe",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 7.23,
+      "category": "cr"
     },
     {
       "name": "Yes Man, Personal Securitron",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 6.73,
+      "category": "cr"
     },
     {
       "name": "Kellan, the Fae-Blooded",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 7.76,
+      "category": "cr"
     },
     {
       "name": "Gilraen, Dúnedain Protector",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 5.42,
+      "category": "cr"
     },
     {
       "name": "Orim's Chant",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 7.12,
+      "category": "in"
     },
     {
       "name": "Return the Favor",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 5.33,
+      "category": "in"
     },
     {
       "name": "New Way Forward",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 7.31,
+      "category": "in"
     },
     {
       "name": "Reality Shift",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 5.78,
+      "category": "in"
     },
     {
       "name": "Wave Goodbye",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 6.6,
+      "category": "so"
     },
     {
       "name": "Past in Flames",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 7.61,
+      "category": "so"
     },
     {
       "name": "Role Reversal",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 5.56,
+      "category": "so"
     },
     {
       "name": "Disrupt Decorum",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 8.17,
+      "category": "so"
     },
     {
       "name": "Chandra's Ignition",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 6.76,
+      "category": "so"
     },
     {
       "name": "Pendant of Prosperity",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 6.18,
+      "category": "ua"
     },
     {
       "name": "Fiery Inscription",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 5.7,
+      "category": "en"
     },
     {
       "name": "Authority of the Consuls",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 6.62,
+      "category": "en"
     },
     {
       "name": "Tyrite Sanctum",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 5.24,
+      "category": "ul"
     },
     {
       "name": "Command Beacon",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 6.47,
+      "category": "ul"
     },
     {
       "name": "Nesting Grounds",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 5.51,
+      "category": "ul"
     },
     {
       "name": "Arcane Signet",
-      "percent": null,
+      "percent": 100,
       "deckCount": 7,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 1.14,
+      "category": "ma"
     },
     {
       "name": "Talisman of Progress",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 12
+      "synergy": 12,
+      "lift": 1.3,
+      "category": "ma"
     },
     {
       "name": "Silent Arbiter",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 11
+      "synergy": 11,
+      "lift": 4.57,
+      "category": "cr"
     },
     {
       "name": "Niv-Mizzet, Parun",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 11
+      "synergy": 11,
+      "lift": 4.38,
+      "category": "cr"
     },
     {
       "name": "Metastatic Evangel",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 11
+      "synergy": 11,
+      "lift": 3.66,
+      "category": "cr"
     },
     {
       "name": "Mental Misstep",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 11
+      "synergy": 11,
+      "lift": 4.73,
+      "category": "in"
     },
     {
       "name": "Damning Verdict",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 11
+      "synergy": 11,
+      "lift": 3.82,
+      "category": "so"
     },
     {
       "name": "Curse of the Swine",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 11
+      "synergy": 11,
+      "lift": 4.5,
+      "category": "so"
     },
     {
       "name": "Rite of Flame",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 11
+      "synergy": 11,
+      "lift": 4.63,
+      "category": "so"
     },
     {
       "name": "The Ozolith",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 11
+      "synergy": 11,
+      "lift": 3.72,
+      "category": "ua"
     },
     {
       "name": "Brotherhood Regalia",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 11
+      "synergy": 11,
+      "lift": 5.57,
+      "category": "ua"
     },
     {
       "name": "Curse of Opulence",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 11
+      "synergy": 11,
+      "lift": 4.02,
+      "category": "en"
     },
     {
       "name": "Minamo, School at Water's Edge",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 11
+      "synergy": 11,
+      "lift": 4.41,
+      "category": "ul"
     },
     {
       "name": "Hall of Heliod's Generosity",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 11
+      "synergy": 11,
+      "lift": 4.89,
+      "category": "ul"
     },
     {
       "name": "Humble Defector",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 10
+      "synergy": 10,
+      "lift": 3.8,
+      "category": "cr"
     },
     {
       "name": "Walking Ballista",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 10
+      "synergy": 10,
+      "lift": 3.02,
+      "category": "cr"
     },
     {
       "name": "Iroas, God of Victory",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 10
+      "synergy": 10,
+      "lift": 2.71,
+      "category": "cr"
     },
     {
       "name": "Imperial Recruiter",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 10
+      "synergy": 10,
+      "lift": 3.45,
+      "category": "cr"
     },
     {
       "name": "Generous Gift",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 10
+      "synergy": 10,
+      "lift": 1.59,
+      "category": "in"
     },
     {
       "name": "Expedite",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 10
+      "synergy": 10,
+      "lift": 4.01,
+      "category": "in"
     },
     {
       "name": "Unexpected Windfall",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 10
+      "synergy": 10,
+      "lift": 2.96,
+      "category": "in"
     },
     {
       "name": "Serum Visions",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 10
+      "synergy": 10,
+      "lift": 3.45,
+      "category": "so"
     },
     {
       "name": "Steelshaper's Gift",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 10
+      "synergy": 10,
+      "lift": 3.41,
+      "category": "so"
     },
     {
       "name": "Shadowspear",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 10
+      "synergy": 10,
+      "lift": 3.36,
+      "category": "ua"
     },
     {
       "name": "Reconnaissance",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 10
+      "synergy": 10,
+      "lift": 3.25,
+      "category": "en"
     },
     {
       "name": "Rising of the Day",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 10
+      "synergy": 10,
+      "lift": 3.46,
+      "category": "en"
     },
     {
       "name": "Swan Song",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 9
+      "synergy": 9,
+      "lift": 1.35,
+      "category": "in"
     },
     {
       "name": "Crash Through",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 9
+      "synergy": 9,
+      "lift": 2.86,
+      "category": "so"
     },
     {
       "name": "Sword of the Animist",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 9
+      "synergy": 9,
+      "lift": 2.9,
+      "category": "ua"
     },
     {
       "name": "Basilisk Collar",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 9
+      "synergy": 9,
+      "lift": 3.32,
+      "category": "ua"
     },
     {
       "name": "Minas Tirith",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 9
+      "synergy": 9,
+      "lift": 2.82,
+      "category": "ul"
     },
     {
       "name": "Mox Amber",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 9
+      "synergy": 9,
+      "lift": 2.88,
+      "category": "ma"
     },
     {
       "name": "Mox Opal",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 9
+      "synergy": 9,
+      "lift": 2.62,
+      "category": "ma"
     },
     {
       "name": "Fiery Islet",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 9
+      "synergy": 9,
+      "lift": 2.91,
+      "category": "la"
     },
     {
       "name": "Path to Exile",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 8
+      "synergy": 8,
+      "lift": 1.17,
+      "category": null
     },
     {
       "name": "Boros Charm",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 8
+      "synergy": 8,
+      "lift": 1.41,
+      "category": "in"
     },
     {
       "name": "Dawn's Truce",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 8
+      "synergy": 8,
+      "lift": 2.51,
+      "category": "in"
     },
     {
       "name": "The One Ring",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 8
+      "synergy": 8,
+      "lift": 2.26,
+      "category": "ua"
     },
     {
       "name": "Counterspell",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 7
+      "synergy": 7,
+      "lift": 1.17,
+      "category": "in"
     },
     {
       "name": "Chaos Warp",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 7
+      "synergy": 7,
+      "lift": 1.26,
+      "category": "in"
     },
     {
       "name": "The Reaver Cleaver",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 7
+      "synergy": 7,
+      "lift": 2.01,
+      "category": "ua"
     },
     {
       "name": "Inventors' Fair",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 7
+      "synergy": 7,
+      "lift": 1.88,
+      "category": "ul"
     },
     {
       "name": "Command Tower",
-      "percent": null,
+      "percent": 100,
       "deckCount": 7,
-      "synergy": 7
+      "synergy": 7,
+      "lift": 1.08,
+      "category": "la"
     },
     {
       "name": "Raugrin Triome",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 7
+      "synergy": 7,
+      "lift": 1.22,
+      "category": "la"
     },
     {
       "name": "Pongify",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 6
+      "synergy": 6,
+      "lift": 1.74,
+      "category": "in"
     },
     {
       "name": "Blasphemous Act",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 6
+      "synergy": 6,
+      "lift": 1.23,
+      "category": "so"
     },
     {
       "name": "Sevinne's Reclamation",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 6
+      "synergy": 6,
+      "lift": 1.83,
+      "category": "so"
     },
     {
       "name": "Urza's Saga",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 6
+      "synergy": 6,
+      "lift": 1.8,
+      "category": "ul"
     },
     {
       "name": "Mountain",
-      "percent": null,
+      "percent": 100,
       "deckCount": 7,
-      "synergy": 6
-    },
-    {
-      "name": "Fabled Passage",
-      "percent": null,
-      "deckCount": 1,
-      "synergy": 6
+      "synergy": 6,
+      "lift": 1.06,
+      "category": "la"
     },
     {
       "name": "Boros Garrison",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 6
+      "synergy": 6,
+      "lift": 2.02,
+      "category": "la"
     },
     {
       "name": "Elegant Parlor",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 6
+      "synergy": 6,
+      "lift": 1.82,
+      "category": "la"
     },
     {
       "name": "Tekuthal, Inquiry Dominus",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 5
+      "synergy": 5,
+      "lift": 1.24,
+      "category": "cr"
     },
     {
       "name": "Expressive Iteration",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 5
+      "synergy": 5,
+      "lift": 1.48,
+      "category": "so"
     },
     {
       "name": "Plains",
-      "percent": null,
+      "percent": 100,
       "deckCount": 7,
-      "synergy": 5
+      "synergy": 5,
+      "lift": 1.05,
+      "category": "la"
+    },
+    {
+      "name": "Fabled Passage",
+      "percent": 14,
+      "deckCount": 1,
+      "synergy": 5,
+      "lift": 1.58,
+      "category": "la"
     },
     {
       "name": "Mana Drain",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 4
+      "synergy": 4,
+      "lift": 1.44,
+      "category": "in"
     },
     {
       "name": "Island",
-      "percent": null,
+      "percent": 100,
       "deckCount": 7,
-      "synergy": 4
+      "synergy": 4,
+      "lift": 1.05,
+      "category": "la"
     },
     {
       "name": "Rugged Prairie",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 4
+      "synergy": 4,
+      "lift": 1.12,
+      "category": "la"
     },
     {
       "name": "Azorius Chancery",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 4
+      "synergy": 4,
+      "lift": 1.58,
+      "category": "la"
     },
     {
       "name": "Izzet Boilerworks",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 4
+      "synergy": 4,
+      "lift": 1.61,
+      "category": "la"
     },
     {
       "name": "Patrolling Peacemaker",
-      "percent": null,
+      "percent": 17,
       "deckCount": 1,
-      "synergy": 3
+      "synergy": 3,
+      "lift": 1.22,
+      "category": "cr"
     },
     {
       "name": "Tezzeret's Gambit",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 3
+      "synergy": 3,
+      "lift": 1.08,
+      "category": "so"
     },
     {
       "name": "Mystic Remora",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 3
+      "synergy": 3,
+      "lift": 1.31,
+      "category": "en"
     },
     {
       "name": "Buried Ruin",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 3
+      "synergy": 3,
+      "lift": 1.13,
+      "category": "ul"
     },
     {
       "name": "Evolving Wilds",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": 3
+      "synergy": 3,
+      "lift": 1.15,
+      "category": "la"
     },
     {
       "name": "Ripples of Potential",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 2
+      "synergy": 2,
+      "lift": 1,
+      "category": "in"
     },
     {
       "name": "Supreme Verdict",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 2
+      "synergy": 2,
+      "lift": 1.25,
+      "category": "so"
     },
     {
       "name": "Teferi's Protection",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 1
+      "synergy": 1,
+      "lift": 1.18,
+      "category": "in"
     },
     {
       "name": "Otawara, Soaring City",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 1
+      "synergy": 1,
+      "lift": 1.11,
+      "category": "ul"
     },
     {
       "name": "Talisman of Creativity",
-      "percent": null,
+      "percent": 43,
       "deckCount": 3,
-      "synergy": 1
+      "synergy": 1,
+      "lift": 1.06,
+      "category": "ma"
     },
     {
       "name": "Frostboil Snarl",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 1
+      "synergy": 1,
+      "lift": 1.09,
+      "category": "la"
     },
     {
       "name": "Ancient Den",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 0
+      "synergy": 0,
+      "lift": 0.9,
+      "category": "ul"
     },
     {
       "name": "Seat of the Synod",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 0
+      "synergy": 0,
+      "lift": 0.88,
+      "category": "ul"
     },
     {
       "name": "Great Furnace",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": 0
+      "synergy": 0,
+      "lift": 0.91,
+      "category": "ul"
     },
     {
       "name": "Mystic Monastery",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": 0
+      "synergy": 0,
+      "lift": 1,
+      "category": "la"
     },
     {
       "name": "Furycalm Snarl",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": -2
+      "synergy": -2,
+      "lift": 0.93,
+      "category": "la"
     },
     {
       "name": "Port Town",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": -3
+      "synergy": -3,
+      "lift": 0.87,
+      "category": "la"
     },
     {
       "name": "Reliquary Tower",
-      "percent": null,
+      "percent": 29,
       "deckCount": 2,
-      "synergy": -5
+      "synergy": -5,
+      "lift": 0.87,
+      "category": "ul"
     },
     {
       "name": "Exotic Orchard",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": -5
+      "synergy": -5,
+      "lift": 0.91,
+      "category": "la"
     },
     {
       "name": "Temple of Triumph",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": -8
+      "synergy": -8,
+      "lift": 0.67,
+      "category": "la"
     },
     {
       "name": "Temple of Epiphany",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": -10
+      "synergy": -10,
+      "lift": 0.61,
+      "category": "la"
     },
     {
       "name": "Temple of Enlightenment",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": -10
+      "synergy": -10,
+      "lift": 0.61,
+      "category": "la"
     },
     {
       "name": "Swords to Plowshares",
-      "percent": null,
+      "percent": 57,
       "deckCount": 4,
-      "synergy": -11
+      "synergy": -11,
+      "lift": 0.83,
+      "category": null
     },
     {
       "name": "Sol Ring",
-      "percent": null,
+      "percent": 71,
       "deckCount": 5,
-      "synergy": -17
+      "synergy": -17,
+      "lift": 0.81,
+      "category": "ma"
     },
     {
       "name": "Fellwar Stone",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": -18
+      "synergy": -18,
+      "lift": 0.45,
+      "category": "ma"
     },
     {
       "name": "Prairie Stream",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": -24
+      "synergy": -24,
+      "lift": 0.38,
+      "category": "la"
     },
     {
       "name": "Shivan Reef",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": -28
+      "synergy": -28,
+      "lift": 0.33,
+      "category": "la"
     },
     {
       "name": "Battlefield Forge",
-      "percent": null,
+      "percent": 14,
       "deckCount": 1,
-      "synergy": -29
+      "synergy": -29,
+      "lift": 0.32,
+      "category": "la"
     }
   ]
 }
